@@ -26,8 +26,8 @@ public class branch implements ActionListener
     private int loginAttempts = 0;
 
     // components of the login window
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+    private String usernameField = "ora_ldobrien";
+    private String passwordField = "a34891416";
     private JFrame mainFrame;
 
 
@@ -38,12 +38,12 @@ public class branch implements ActionListener
     {
         mainFrame = new JFrame("User Login");
 
-        JLabel usernameLabel = new JLabel("Enter username: ");
-        JLabel passwordLabel = new JLabel("Enter password: ");
+//        JLabel usernameLabel = new JLabel("Enter username: ");
+//        JLabel passwordLabel = new JLabel("Enter password: ");
 
-        usernameField = new JTextField(10);
-        passwordField = new JPasswordField(10);
-        passwordField.setEchoChar('*');
+//        usernameField = new JTextField(10);
+//        passwordField = new JPasswordField(10);
+//        passwordField.setEchoChar('*');
 
         JButton loginButton = new JButton("Log In");
 
@@ -59,30 +59,6 @@ public class branch implements ActionListener
         contentPane.setLayout(gb);
         contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // place the username label
-        c.gridwidth = GridBagConstraints.RELATIVE;
-        c.insets = new Insets(10, 10, 5, 0);
-        gb.setConstraints(usernameLabel, c);
-        contentPane.add(usernameLabel);
-
-        // place the text field for the username
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.insets = new Insets(10, 0, 5, 10);
-        gb.setConstraints(usernameField, c);
-        contentPane.add(usernameField);
-
-        // place password label
-        c.gridwidth = GridBagConstraints.RELATIVE;
-        c.insets = new Insets(0, 10, 10, 0);
-        gb.setConstraints(passwordLabel, c);
-        contentPane.add(passwordLabel);
-
-        // place the password field
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.insets = new Insets(0, 0, 10, 10);
-        gb.setConstraints(passwordField, c);
-        contentPane.add(passwordField);
-
         // place the login button
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.insets = new Insets(5, 10, 10, 10);
@@ -90,8 +66,7 @@ public class branch implements ActionListener
         gb.setConstraints(loginButton, c);
         contentPane.add(loginButton);
 
-        // register password field and OK button with action event handler
-        passwordField.addActionListener(this);
+        // OK button with action event handler
         loginButton.addActionListener(this);
 
         // anonymous inner class for closing the window
@@ -114,9 +89,6 @@ public class branch implements ActionListener
         // make the window visible
         mainFrame.setVisible(true);
 
-        // place the cursor in the text field for the username
-        usernameField.requestFocus();
-
         try
         {
             // Load the Oracle JDBC driver
@@ -133,13 +105,13 @@ public class branch implements ActionListener
     /*
      * connects to Oracle database named ug using user supplied username and password
      */
-    private boolean connect(String username, String password)
+    private boolean connect()
     {
         String connectURL = "jdbc:oracle:thin:@localhost:1522:stu";
 
         try
         {
-            con = DriverManager.getConnection(connectURL,username,password);
+            con = DriverManager.getConnection(connectURL,usernameField,passwordField);
 
             System.out.println("\nConnected to Oracle!");
             return true;
@@ -157,7 +129,7 @@ public class branch implements ActionListener
      */
     public void actionPerformed(ActionEvent e)
     {
-        if ( connect(usernameField.getText(), String.valueOf(passwordField.getPassword())) )
+        if ( connect() )
         {
             // if the username and password are valid,
             // remove the login window and display a text menu
@@ -171,12 +143,8 @@ public class branch implements ActionListener
             if (loginAttempts >= 3)
             {
                 mainFrame.dispose();
+                System.out.println("Login Attempt Failed");
                 System.exit(-1);
-            }
-            else
-            {
-                // clear the password
-                passwordField.setText("");
             }
         }
 
@@ -190,6 +158,7 @@ public class branch implements ActionListener
     {
         int choice;
         boolean quit;
+        customer c = new customer();
 
         quit = false;
 
@@ -201,7 +170,7 @@ public class branch implements ActionListener
             while (!quit)
             {
                 System.out.print("\n\nPlease choose one of the following: \n");
-                System.out.print("1.  Insert branch\n");
+                System.out.print("1.  Customer Menu\n");
                 System.out.print("2.  Delete branch\n");
                 System.out.print("3.  Update branch\n");
                 System.out.print("4.  Show branch\n");
@@ -213,10 +182,10 @@ public class branch implements ActionListener
 
                 switch(choice)
                 {
-                    case 1:  insertBranch(); break;
-                    case 2:  deleteBranch(); break;
-                    case 3:  updateBranch(); break;
-                    case 4:  showBranch(); break;
+                    case 1:  c.customerMenu(); break;
+//                    case 2:  deleteBranch(); break;
+//                    case 3:  updateBranch(); break;
+//                    case 4:  showBranch(); break;
                     case 5:  quit = true;
                 }
             }
@@ -240,280 +209,8 @@ public class branch implements ActionListener
                 System.out.println("Message: " + ex.getMessage());
             }
         }
-        catch (SQLException ex)
-        {
+        catch (SQLException ex) {
             System.out.println("Message: " + ex.getMessage());
         }
-    }
-
-
-    /*
-     * inserts a branch
-     */
-    private void insertBranch()
-    {
-        int                bid;
-        String             bname;
-        String             baddr;
-        String             bcity;
-        int                bphone;
-        PreparedStatement  ps;
-
-        try
-        {
-            ps = con.prepareStatement("INSERT INTO branch VALUES (?,?,?,?,?)");
-
-            System.out.print("\nBranch ID: ");
-            bid = Integer.parseInt(in.readLine());
-            ps.setInt(1, bid);
-
-            System.out.print("\nBranch Name: ");
-            bname = in.readLine();
-            ps.setString(2, bname);
-
-            System.out.print("\nBranch Address: ");
-            baddr = in.readLine();
-
-            if (baddr.length() == 0)
-            {
-                ps.setString(3, null);
-            }
-            else
-            {
-                ps.setString(3, baddr);
-            }
-
-            System.out.print("\nBranch City: ");
-            bcity = in.readLine();
-            ps.setString(4, bcity);
-
-            System.out.print("\nBranch Phone: ");
-            String phoneTemp = in.readLine();
-            if (phoneTemp.length() == 0)
-            {
-                ps.setNull(5, java.sql.Types.INTEGER);
-            }
-            else
-            {
-                bphone = Integer.parseInt(phoneTemp);
-                ps.setInt(5, bphone);
-            }
-
-            ps.executeUpdate();
-
-            // commit work
-            con.commit();
-
-            ps.close();
-        }
-        catch (IOException e)
-        {
-            System.out.println("IOException!");
-        }
-        catch (SQLException ex)
-        {
-            System.out.println("Message: " + ex.getMessage());
-            try
-            {
-                // undo the insert
-                con.rollback();
-            }
-            catch (SQLException ex2)
-            {
-                System.out.println("Message: " + ex2.getMessage());
-                System.exit(-1);
-            }
-        }
-    }
-
-
-    /*
-     * deletes a branch
-     */
-    private void deleteBranch()
-    {
-        int                bid;
-        PreparedStatement  ps;
-
-        try
-        {
-            ps = con.prepareStatement("DELETE FROM branch WHERE branch_id = ?");
-
-            System.out.print("\nBranch ID: ");
-            bid = Integer.parseInt(in.readLine());
-            ps.setInt(1, bid);
-
-            int rowCount = ps.executeUpdate();
-
-            if (rowCount == 0)
-            {
-                System.out.println("\nBranch " + bid + " does not exist!");
-            }
-
-            con.commit();
-
-            ps.close();
-        }
-        catch (IOException e)
-        {
-            System.out.println("IOException!");
-        }
-        catch (SQLException ex)
-        {
-            System.out.println("Message: " + ex.getMessage());
-
-            try
-            {
-                con.rollback();
-            }
-            catch (SQLException ex2)
-            {
-                System.out.println("Message: " + ex2.getMessage());
-                System.exit(-1);
-            }
-        }
-    }
-
-
-    /*
-     * updates the name of a branch
-     */
-    private void updateBranch()
-    {
-        int                bid;
-        String             bname;
-        PreparedStatement  ps;
-
-        try
-        {
-            ps = con.prepareStatement("UPDATE branch SET branch_name = ? WHERE branch_id = ?");
-
-            System.out.print("\nBranch ID: ");
-            bid = Integer.parseInt(in.readLine());
-            ps.setInt(2, bid);
-
-            System.out.print("\nBranch Name: ");
-            bname = in.readLine();
-            ps.setString(1, bname);
-
-            int rowCount = ps.executeUpdate();
-            if (rowCount == 0)
-            {
-                System.out.println("\nBranch " + bid + " does not exist!");
-            }
-
-            con.commit();
-
-            ps.close();
-        }
-        catch (IOException e)
-        {
-            System.out.println("IOException!");
-        }
-        catch (SQLException ex)
-        {
-            System.out.println("Message: " + ex.getMessage());
-
-            try
-            {
-                con.rollback();
-            }
-            catch (SQLException ex2)
-            {
-                System.out.println("Message: " + ex2.getMessage());
-                System.exit(-1);
-            }
-        }
-    }
-
-
-    /*
-     * display information about branches
-     */
-    private void showBranch()
-    {
-        String     bid;
-        String     bname;
-        String     baddr;
-        String     bcity;
-        String     bphone;
-        Statement  stmt;
-        ResultSet  rs;
-
-        try
-        {
-            stmt = con.createStatement();
-
-            rs = stmt.executeQuery("SELECT * FROM branch");
-
-            // get info on ResultSet
-            ResultSetMetaData rsmd = rs.getMetaData();
-
-            // get number of columns
-            int numCols = rsmd.getColumnCount();
-
-            System.out.println(" ");
-
-            // display column names;
-            for (int i = 0; i < numCols; i++)
-            {
-                // get column name and print it
-
-                System.out.printf("%-15s", rsmd.getColumnName(i+1));
-            }
-
-            System.out.println(" ");
-
-            while(rs.next())
-            {
-                // for display purposes get everything from Oracle
-                // as a string
-
-                // simplified output formatting; truncation may occur
-
-                bid = rs.getString("branch_id");
-                System.out.printf("%-10.10s", bid);
-
-                bname = rs.getString("branch_name");
-                System.out.printf("%-20.20s", bname);
-
-                baddr = rs.getString("branch_addr");
-                if (rs.wasNull())
-                {
-                    System.out.printf("%-20.20s", " ");
-                }
-                else
-                {
-                    System.out.printf("%-20.20s", baddr);
-                }
-
-                bcity = rs.getString("branch_city");
-                System.out.printf("%-15.15s", bcity);
-
-                bphone = rs.getString("branch_phone");
-                if (rs.wasNull())
-                {
-                    System.out.printf("%-15.15s\n", " ");
-                }
-                else
-                {
-                    System.out.printf("%-15.15s\n", bphone);
-                }
-            }
-
-            // close the statement;
-            // the ResultSet will also be closed
-            stmt.close();
-        }
-        catch (SQLException ex)
-        {
-            System.out.println("Message: " + ex.getMessage());
-        }
-    }
-
-
-    public static void main(String args[])
-    {
-        branch b = new branch();
     }
 }
