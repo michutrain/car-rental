@@ -38,13 +38,6 @@ public class branch implements ActionListener
     {
         mainFrame = new JFrame("User Login");
 
-//        JLabel usernameLabel = new JLabel("Enter username: ");
-//        JLabel passwordLabel = new JLabel("Enter password: ");
-
-//        usernameField = new JTextField(10);
-//        passwordField = new JPasswordField(10);
-//        passwordField.setEchoChar('*');
-
         JButton loginButton = new JButton("Log In");
 
         JPanel contentPane = new JPanel();
@@ -134,7 +127,7 @@ public class branch implements ActionListener
             // if the username and password are valid,
             // remove the login window and display a text menu
             mainFrame.dispose();
-            showMenu();
+            showMenu(con);
         }
         else
         {
@@ -154,12 +147,12 @@ public class branch implements ActionListener
     /*
      * displays simple text interface
      */
-    private void showMenu()
+    public void showMenu(Connection con)
     {
         int choice;
         boolean quit;
         customer c = new customer();
-
+        int currentChoice = 0;
         quit = false;
 
         try
@@ -170,11 +163,15 @@ public class branch implements ActionListener
             while (!quit)
             {
                 System.out.print("\n\nPlease choose one of the following: \n");
-                System.out.print("1.  Customer Menu\n");
-                System.out.print("2.  Delete branch\n");
-                System.out.print("3.  Update branch\n");
-                System.out.print("4.  Show branch\n");
-                System.out.print("5.  Quit\n>> ");
+
+                if(currentChoice == 1) {
+                    c.customerMenu(con);
+                } else {
+                    System.out.print("1:  Customer Menu: \n");
+                    System.out.print("2:  Reports \n");
+                    System.out.print("3:  Clerk \n");
+                    System.out.print("5.  Quit\n>> ");
+                }
 
                 choice = Integer.parseInt(in.readLine());
 
@@ -182,7 +179,7 @@ public class branch implements ActionListener
 
                 switch(choice)
                 {
-                    case 1:  c.customerMenu(); break;
+                    case 1:  currentChoice = 1; break;
 //                    case 2:  deleteBranch(); break;
 //                    case 3:  updateBranch(); break;
 //                    case 4:  showBranch(); break;
