@@ -5,70 +5,132 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class customer {
-//    Connection con;
-    public void customerMenu(Connection con){
-        MainMenu b = new MainMenu();
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        int choice;
-        boolean quit;
-        int currentChoice = 0;
+    Connection con;
+    int carType = 0;
+    String location = "";
+    int choice;
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    String timeInterval = ""; // TODO: What type should the time interval be? Should it be a timestamp fromTime and toTime?
 
-        quit = false;
-
-    try
-    {
-        // disable auto commit mode
-        con.setAutoCommit(false);
-
-        while (!quit)
-        {
-            // This needs to be broken into function calls like in branch
-            System.out.print("\n\nPlease choose one of the following: \n");
-            System.out.print("\nCustomer Menu: \n");
+    public void carTypeMenu(){
+        try {
+            System.out.print("Please choose one of the following: \n");
             System.out.print("Car Type:\n");
+
+            // TODO: Get cars From DataBase to show as options
             System.out.print("1:  Fast Car\n");
             System.out.print("2:  Slow Car\n");
-
-            System.out.print("Location\n");
-            System.out.print("3:  Place A\n");
-            System.out.print("4:  Place B\n");
-
-            System.out.print("Time Interval\n");
-            System.out.print("5:  1 hour\n");
-            System.out.print("6:  2 hours\n");
-
             System.out.print("50.  Back\n>> ");
-
             choice = Integer.parseInt(in.readLine());
 
-            System.out.println(" ");
+            carType = choice;
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException!");
 
-            switch(choice)
+            try
             {
-                case 1:   System.out.print("\nFast Car Chosen\n");; break;
-                case 50:  quit = true;
+                con.close();
+                System.exit(-1);
+            }
+            catch (SQLException ex)
+            {
+                System.out.println("Message: " + ex.getMessage());
             }
         }
-
-        System.out.println("\nReturning to Home Screen\n\n");
-        b.showMenu(con);
+//        catch (SQLException ex) {
+//            System.out.println("Message: " + ex.getMessage());
+//        }
     }
-    catch (IOException e)
-    {
-        System.out.println("IOException!");
+
+    public void locationMenu(){
+        try {
+            System.out.print("\nPlease Enter your location: \n");
+
+            // TODO: Get locations From DataBase to compare with input? Or get a list of locations and get the ints
+            location = in.readLine();
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException!");
+
+            try
+            {
+                con.close();
+                System.exit(-1);
+            }
+            catch (SQLException ex)
+            {
+                System.out.println("Message: " + ex.getMessage());
+            }
+        }
+//        catch (SQLException ex) {
+//            System.out.println("Message: " + ex.getMessage());
+//        }
+    }
+
+    public void timeMenu(){
+        try {
+            System.out.print("\nPlease Enter your Time Interval \n");
+
+            // TODO: How do we want to handle this?
+            timeInterval = in.readLine();
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException!");
+
+            try
+            {
+                con.close();
+                System.exit(-1);
+            }
+            catch (SQLException ex)
+            {
+                System.out.println("Message: " + ex.getMessage());
+            }
+        }
+//        catch (SQLException ex) {
+//            System.out.println("Message: " + ex.getMessage());
+//        }
+    }
+
+    public void customerMenu(Connection con){
+        this.con = con;
+        MainMenu b = new MainMenu();
+
+        boolean quit;
+        quit = false;
 
         try
         {
-            con.close();
-            System.exit(-1);
+            // disable auto commit mode
+            con.setAutoCommit(false);
+
+            while (!quit)
+            {
+                System.out.print("\nCustomer Menu: \n");
+                // This needs to be broken into function calls like in branch
+                if(carType == 0) {
+                    carTypeMenu();
+                } else if (location.isEmpty()) {
+                    locationMenu();
+                } else if (timeInterval.isEmpty()) {
+                    timeMenu();
+                } else { // TODO: If the car is avaible or not....
+                    System.out.print("Car Selection Finished - Exiting\n");
+                    quit = true;
+                }
+
+                System.out.println(" ");
+            }
+
+            System.out.println("Returning to Home Screen\n");
+            b.showMenu(con);
         }
-        catch (SQLException ex)
-        {
+        catch (SQLException ex) {
             System.out.println("Message: " + ex.getMessage());
         }
-    }
-    catch (SQLException ex) {
-        System.out.println("Message: " + ex.getMessage());
-    }
     }
 }

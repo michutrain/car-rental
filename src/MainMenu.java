@@ -157,11 +157,13 @@ public class MainMenu implements ActionListener {
 
             while (!quit)
             {
-                System.out.print("\n\nPlease choose one of the following: \n");
 
                 if(currentChoice == 1) {
                     c.customerMenu(con);
                 } else {
+                    System.out.print("---------------Main Menu---------------");
+                    System.out.print("\nPlease choose one of the following: \n");
+
                     System.out.print("1:  Customer Menu: \n");
                     System.out.print("2:  Reports \n");
                     System.out.print("3:  Clerk \n");

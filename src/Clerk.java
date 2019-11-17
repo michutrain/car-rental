@@ -13,20 +13,20 @@ public class Clerk {
     private PreparedStatement returnReport;
 
     void initialize() {
-        try {
-            rentVehicle = branch.con.prepareStatement(
-                    "INSERT INTO Rental" +
-                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            );
-
-            returnVehicle = branch.con.prepareStatement(
-                    "INSERT INTO \"Return\"" +
-                            "(rid, stamp, fulltank, odometer, \"value\")" +
-                            "VALUES (?, ?, ?, ?, ?)");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            rentVehicle = branch.con.prepareStatement(
+//                    "INSERT INTO Rental" +
+//                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
+//                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+//            );
+//
+//            returnVehicle = branch.con.prepareStatement(
+//                    "INSERT INTO \"Return\"" +
+//                            "(rid, stamp, fulltank, odometer, \"value\")" +
+//                            "VALUES (?, ?, ?, ?, ?)");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     void rentVehicle(long rid, long vid, String dlicense, Timestamp from, Timestamp to, long odometer,
