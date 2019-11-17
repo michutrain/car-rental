@@ -51,7 +51,6 @@ public class Clerk {
         returnVehicle.setTimestamp(1, stamp);
         returnVehicle.setLong(2, fullTank);
         returnVehicle.setLong(3, odometer);
-        returnVehicle
     }
 
     /**

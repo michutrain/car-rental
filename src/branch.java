@@ -57,7 +57,6 @@ public class branch implements ActionListener
         c.insets = new Insets(5, 10, 10, 10);
         c.anchor = GridBagConstraints.CENTER;
         gb.setConstraints(loginButton, c);
-        contentPane.add(loginButton);
 
         // OK button with action event handler
         loginButton.addActionListener(this);
