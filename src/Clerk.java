@@ -14,13 +14,13 @@ public class Clerk {
 
     void initialize() {
         try {
-            rentVehicle = branch.con.prepareStatement(
+            rentVehicle = MainMenu.con.prepareStatement(
                     "INSERT INTO Rental" +
                     "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
 
-            returnVehicle = branch.con.prepareStatement(
+            returnVehicle = MainMenu.con.prepareStatement(
                     "INSERT INTO \"Return\"" +
                             "(rid, stamp, fulltank, odometer, \"value\")" +
                             "VALUES (?, ?, ?, ?, ?)");
@@ -43,7 +43,6 @@ public class Clerk {
         rentVehicle.setLong(9, confNo);
 
         rentVehicle.executeUpdate();
-        rentVehicle.clearParameters();
     }
 
     void returnVehicle(long rid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
@@ -51,6 +50,9 @@ public class Clerk {
         returnVehicle.setTimestamp(1, stamp);
         returnVehicle.setLong(2, fullTank);
         returnVehicle.setLong(3, odometer);
+        returnVehicle.setLong(4, value);
+
+        returnVehicle.executeUpdate();
     }
 
     /**
