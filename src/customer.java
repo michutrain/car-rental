@@ -1,105 +1,113 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class customer {
     Connection con;
-    int carType = 0;
+    String carType = "";
     String location = "";
     int choice;
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     String timeInterval = ""; // TODO: What type should the time interval be? Should it be a timestamp fromTime and toTime?
+    PreparedStatement ps;
 
-    public void carTypeMenu(){
-        try {
-            System.out.print("Please choose one of the following: \n");
-            System.out.print("Car Type:\n");
-
-            // TODO: Get cars From DataBase to show as options
-            System.out.print("1:  Fast Car\n");
-            System.out.print("2:  Slow Car\n");
-            System.out.print("50.  Back\n>> ");
-            choice = Integer.parseInt(in.readLine());
-
-            carType = choice;
-        }
-        catch (IOException e)
-        {
-            System.out.println("IOException!");
-
-            try
-            {
-                con.close();
-                System.exit(-1);
-            }
-            catch (SQLException ex)
-            {
-                System.out.println("Message: " + ex.getMessage());
-            }
-        }
-//        catch (SQLException ex) {
+    public void addVehicle() {
+//        try {
+//            ps = con.prepareStatement(
+//            "INSERT INTO VEHICLE(vid, vlicense, make, model, year, color, odometer, status, vtname, location, city)" +
+//                    "VALUES (1234, '4321', 'Ford', 'Mustang', '2019', 'Red', 0, 'True', 'car', 'Kits', 'Vancouver')");
+//            ps.executeUpdate();
+//            System.out.println("Car Added\n");
+//        } catch (SQLException ex) {
 //            System.out.println("Message: " + ex.getMessage());
 //        }
     }
 
-    public void locationMenu(){
+    public void makeReservation(){
         try {
-            System.out.print("\nPlease Enter your location: \n");
-
-            // TODO: Get locations From DataBase to compare with input? Or get a list of locations and get the ints
+            System.out.print("\nLocation: ");
             location = in.readLine();
-        }
-        catch (IOException e)
-        {
-            System.out.println("IOException!");
 
-            try
-            {
-                con.close();
-                System.exit(-1);
-            }
-            catch (SQLException ex)
-            {
-                System.out.println("Message: " + ex.getMessage());
-            }
-        }
-//        catch (SQLException ex) {
-//            System.out.println("Message: " + ex.getMessage());
-//        }
-    }
+            System.out.print("\nCar Type: ");
+            carType = in.readLine();
 
-    public void timeMenu(){
-        try {
-            System.out.print("\nPlease Enter your Time Interval \n");
-
-            // TODO: How do we want to handle this?
+            System.out.print("\nTime Interval: ");
             timeInterval = in.readLine();
         }
         catch (IOException e)
         {
             System.out.println("IOException!");
-
-            try
-            {
-                con.close();
-                System.exit(-1);
-            }
-            catch (SQLException ex)
-            {
-                System.out.println("Message: " + ex.getMessage());
-            }
         }
-//        catch (SQLException ex) {
-//            System.out.println("Message: " + ex.getMessage());
-//        }
+
+    }
+
+    public void showAvailableVehicles() {
+        Statement stmt;
+        ResultSet rs;
+
+        try
+        {
+            stmt = con.createStatement();
+        // TODO: This needs to be the available vehicles, not all vehicles
+
+
+            System.out.println(" ");
+            // TODO: Have an input for the user to input the carType, location, and timeinterval
+            // TODO: If none of the above are provided, display all available vehicles at the branch
+            makeReservation();
+            if(carType.isEmpty() && location.isEmpty() && timeInterval.isEmpty()) {
+                rs = stmt.executeQuery("SELECT * FROM VEHICLE"); // TODO: Needs to have a condition
+
+                // get info on ResultSet
+                ResultSetMetaData rsmd = rs.getMetaData();
+
+                // get number of columns
+                int numCols = rsmd.getColumnCount() > 15 ? 15 : rsmd.getColumnCount();
+
+                System.out.println(" ");
+
+                // display column names;
+                for (int i = 0; i < numCols; i++)
+                {
+                    // get column name and print it
+                    System.out.printf("%-15s", rsmd.getColumnName(i+1));
+                }
+                int count = 0;
+                while(rs.next() && count < 15)
+                {
+                    String make = rs.getString("MAKE");
+                    System.out.printf("%-10.10s", make);
+
+                    String model = rs.getString("MODEL");
+                    System.out.printf("%-20.20s", model);
+
+                    String vLocation = rs.getString("LOCATION");
+                    System.out.printf("%-20.20s", vLocation);
+                    count++;
+                }
+            } else {
+                rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM VEHICLE"); // TODO: Needs to have a condition
+                System.out.println("Number of Available Vehicles:");
+                rs.next();
+                System.out.println(rs.getInt("total") +"\n");
+                // TODO: Need to add a way to get the details of the vehicles
+            }
+
+            // close the statement;
+            // the ResultSet will also be closed
+            stmt.close();
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     }
 
     public void customerMenu(Connection con){
         this.con = con;
         MainMenu b = new MainMenu();
-
+        int firstChoice = 0;
         boolean quit;
         quit = false;
 
@@ -110,17 +118,21 @@ public class customer {
 
             while (!quit)
             {
-                System.out.print("\nCustomer Menu: \n");
-                // This needs to be broken into function calls like in branch
-                if(carType == 0) {
-                    carTypeMenu();
-                } else if (location.isEmpty()) {
-                    locationMenu();
-                } else if (timeInterval.isEmpty()) {
-                    timeMenu();
-                } else { // TODO: If the car is avaible or not....
-                    System.out.print("Car Selection Finished - Exiting\n");
-                    quit = true;
+                if(firstChoice == 0){
+                    System.out.print("\nCustomer Menu: \n");
+                    System.out.print("1:  View Available Vehicles\n");
+                    System.out.print("2:  Make a Reservation\n");
+                    firstChoice = Integer.parseInt(in.readLine());
+                }
+                if(firstChoice == 1) {
+                    showAvailableVehicles();
+                    break;
+                } else if (firstChoice == 2) {
+                    makeReservation();
+                    break;
+                } else {
+                    System.out.println("Invalid Choice - Please select again");
+                    firstChoice = 0;
                 }
 
                 System.out.println(" ");
@@ -131,6 +143,20 @@ public class customer {
         }
         catch (SQLException ex) {
             System.out.println("Message: " + ex.getMessage());
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException!");
+
+            try
+            {
+                con.close();
+                System.exit(-1);
+            }
+            catch (SQLException ex)
+            {
+                System.out.println("Message: " + ex.getMessage());
+            }
         }
     }
 }
