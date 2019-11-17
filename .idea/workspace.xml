@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e32a6f1a-d966-41aa-839d-f0082576273f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled/OracleCon.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled/branch$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled/branch$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled/branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled/branch.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/branch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/customer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -50,11 +45,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="branch.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="branch.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/branch.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="175" column="54" lean-forward="true" selection-start-line="175" selection-start-column="54" selection-end-line="175" selection-end-column="54" />
+            <state relative-caret-position="132">
+              <caret line="151" column="19" lean-forward="true" selection-start-line="151" selection-start-column="19" selection-end-line="151" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3078#3230#0" expanded="true" />
@@ -64,14 +59,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="customer.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="customer.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/customer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+            <state relative-caret-position="225">
+              <caret line="24" column="73" selection-start-line="24" selection-start-column="73" selection-end-line="24" selection-end-column="73" />
               <folding>
-                <element signature="e#54#55#0" expanded="true" />
-                <element signature="e#90#91#0" expanded="true" />
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -114,10 +108,10 @@
       <find>CHAR(20)</find>
       <find>Branch</find>
       <find>login</find>
-      <find>showMenu</find>
       <find>usernameField</find>
       <find>ldobrien</find>
       <find>connect</find>
+      <find>showMenu</find>
     </findStrings>
     <replaceStrings>
       <replace>VARCHAR2(20)</replace>
@@ -135,8 +129,8 @@
         <option value="$PROJECT_DIR$/src/OracleCon.java" />
         <option value="$PROJECT_DIR$/src/Server.java" />
         <option value="$PROJECT_DIR$/src/MainMenu.java" />
-        <option value="$PROJECT_DIR$/src/customer.java" />
         <option value="$PROJECT_DIR$/src/branch.java" />
+        <option value="$PROJECT_DIR$/src/customer.java" />
       </list>
     </option>
   </component>
@@ -267,12 +261,12 @@
       <updated>1572473508925</updated>
       <workItem from="1572473518942" duration="4758000" />
       <workItem from="1572570408067" duration="1106000" />
-      <workItem from="1573770117476" duration="5005000" />
+      <workItem from="1573770117476" duration="7176000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10869000" />
+    <option name="totallyTimeSpent" value="13040000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -287,7 +281,7 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3903302" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.31957546" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
@@ -298,7 +292,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39976415" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.2393868" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -317,21 +311,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/branch.java</url>
-          <line>62</line>
-          <properties />
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/branch.java</url>
-          <line>47</line>
-          <properties />
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="8" />
+      <option name="time" value="13" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -456,25 +436,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/customer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-          <folding>
-            <element signature="e#54#55#0" expanded="true" />
-            <element signature="e#90#91#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/branch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="175" column="54" lean-forward="true" selection-start-line="175" selection-start-column="54" selection-end-line="175" selection-end-column="54" />
+        <state relative-caret-position="132">
+          <caret line="151" column="19" lean-forward="true" selection-start-line="151" selection-start-column="19" selection-end-line="151" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3078#3230#0" expanded="true" />
             <element signature="e#3229#3230#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/customer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="24" column="73" selection-start-line="24" selection-start-column="73" selection-end-line="24" selection-end-column="73" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
