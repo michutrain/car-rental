@@ -1,0 +1,10 @@
+out/
+.DS_Store
+
+// Intellij-related files
+*.iml
+.idea/
+
+// Eclipse-related files
+.classpath
+.project
