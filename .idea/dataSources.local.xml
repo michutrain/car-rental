@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Oracle DB" uuid="e8f8539d-d991-4447-831a-e05e3139c360">
+      <database-info product="Oracle" version="Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production" jdbc-version="4.2" driver-name="Oracle JDBC driver" driver-version="12.2.0.1.0" family="ORACLE" exact-version="12.2.0.1">
+        <extra-name-characters>$#</extra-name-characters>
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="upper" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>ora_ks376</user-name>
+      <introspection-schemas>*:ORA_LDOBRIEN</introspection-schemas>
+      <ssh-properties>
+        <enabled>true</enabled>
+        <proxy-host>thetis.students.cs.ubc.ca</proxy-host>
+        <proxy-port>22</proxy-port>
+        <user>ks376</user>
+        <use-password>false</use-password>
+        <auth-type>KEY_PAIR</auth-type>
+      </ssh-properties>
+    </data-source>
+  </component>
+</project>
