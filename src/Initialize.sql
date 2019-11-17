@@ -62,8 +62,7 @@ CREATE TABLE Rental (
 
 CREATE TABLE Return(
 	rid       NUMBER PRIMARY KEY,
-  "date"    DATE,
-  time      DATE,
+  stamp     TIMESTAMP,
   odometer  NUMBER,
   fulltank  NUMBER,
   value NUMBER,
