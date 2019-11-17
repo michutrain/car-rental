@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class customer {
 //    Connection con;
     public void customerMenu(Connection con){
-        branch b = new branch();
+        MainMenu b = new MainMenu();
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         int choice;
         boolean quit;

@@ -1,10 +1,11 @@
-import Util.Branch;
+import oracle.sql.TIMESTAMP;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class Clerk {
-    private Statement stmt;
-
     private PreparedStatement rentVehicle;
     private PreparedStatement returnVehicle;
 
@@ -13,20 +14,16 @@ public class Clerk {
 
     void initialize() {
         try {
-            stmt = MainMenu.con.createStatement();
-
             rentVehicle = MainMenu.con.prepareStatement(
-                    "INSERT INTO RENTAL" +
-                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo) " +
+                    "INSERT INTO Rental" +
+                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
 
             returnVehicle = MainMenu.con.prepareStatement(
-                    "INSERT INTO RETURN" +
-                            "(rid, stamp, fulltank, odometer, VALUE)" +
-                            "VALUES (?, ?, ?, ?, ?)"
-            );
-
+                    "INSERT INTO \"Return\"" +
+                            "(rid, stamp, fulltank, odometer, \"value\")" +
+                            "VALUES (?, ?, ?, ?, ?)");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -56,59 +53,21 @@ public class Clerk {
         returnVehicle.setLong(4, value);
 
         returnVehicle.executeUpdate();
-        calculateAndDisplayCost(rid, stamp, fullTank, odometer, value);
-    }
-
-    void calculateAndDisplayCost(long rid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
-
-        ResultSet rs = stmt.executeQuery("SELECT * FROM RENTAL WHERE RID = " + rid);
-        long vid = rs.getLong("VID");
-        Timestamp from = rs.getTimestamp("FROMTIMESTAMP");
-        long confNum = rs.getLong("CONFNO");
-
-        rs = stmt.executeQuery("SELECT * FROM VEHICLETYPE WHERE VTNAME IN (" +
-                "SELECT VTNAME FROM VEHICLE WHERE VLICENSE = " + vid + ")");
-
-        // TODO: CALCULATE THE COST
     }
 
     /**
      * Generates daily rentals report
-     * @param br The Branch specified. If null, will generate report for all branches
+     * @param br The branch specified. If null, will generate report for all branches
      */
-    void generateDailyRentalsReport(Branch br) throws SQLException {
-        ResultSet rs;
-
-        if (br == null) {
-            rs = stmt.executeQuery(
-                            "SELECT BRANCH, VTNAME " +
-                                "FROM VEHICLE " +
-                                "WHERE VLICENSE IN (" +
-                                    "SELECT VLICENSE " +
-                                    "FROM RENTAL" +
-                                ")" +
-                                "GROUP BY BRANCH, VTNAME");
-        } else {
-            rs = stmt.executeQuery(
-                        "SELECT VTNAME " +
-                            "FROM VEHICLE " +
-                            "WHERE VLICENSE IN (" +
-                                "SELECT VLICENSE " +
-                                "FROM RENTAL" +
-                            ")" +
-                            "GROUP BY VTNAME"
-            );
-        }
-
-
+    void generateDailyRentalsReport(branch br) {
 
     }
 
     /**
      * Generates daily returns report
-     * @param br The Branch specified. If null, will generate report for all branches
+     * @param br The branch specified. If null, will generate report for all branches
      */
-    void generateDailyReturnsReport(Branch br) {
+    void generateDailyReturnsReport(branch br) {
 
     }
 }
