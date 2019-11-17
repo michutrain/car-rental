@@ -20,7 +20,7 @@ public class branch implements ActionListener
     // command line reader
     private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    private Connection con;
+    public static Connection con;
 
     // user is allowed 3 login attempts
     private int loginAttempts = 0;
