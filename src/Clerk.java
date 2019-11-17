@@ -47,11 +47,11 @@ public class Clerk {
     }
 
     void returnVehicle(long rid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
-        returnVehicle.setLong(0, rid);
-        returnVehicle.setTimestamp(1, stamp);
-        returnVehicle.setLong(2, fullTank);
-        returnVehicle.setLong(3, odometer);
-        returnVehicle
+//        returnVehicle.setLong(0, rid);
+//        returnVehicle.setTimestamp(1, stamp);
+//        returnVehicle.setLong(2, fullTank);
+//        returnVehicle.setLong(3, odometer);
+//        returnVehicle
     }
 
     /**
