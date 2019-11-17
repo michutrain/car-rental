@@ -19,7 +19,7 @@ CREATE TABLE Vehicle(
   color     VARCHAR2(20),
   odometer  NUMBER,
   status    CHAR(8),
-  vtname    VARCHAR2(20),
+  vtname    VARCHAR2(20) NOT NULL,
   location  VARCHAR2(20),
   city      VARCHAR2(20),
   FOREIGN KEY(vtname) REFERENCES VehicleType
@@ -27,49 +27,45 @@ CREATE TABLE Vehicle(
 
 
 CREATE TABLE Customer(
-	cellphone NUMBER PRIMARY KEY,
-  name VARCHAR2(20),
-  address VARCHAR2(20),
-  dlicense VARCHAR2(20)
+  dlicense  VARCHAR2(20) PRIMARY KEY,
+  cellphone NUMBER,
+  name      VARCHAR2(20),
+  address   VARCHAR2(20)
 );
 
 CREATE TABLE Reservation(
-	confNo			NUMBER PRIMARY KEY,
-  vtname			VARCHAR2(20),
-  cellphone		NUMBER,
-  fromDate		DATE,
-  fromTime 		interval day (0) to second(0),
-  toDate			DATE,
-  toTime			interval day (0) to second(0),
+	confNo			  NUMBER PRIMARY KEY,
+  vtname			  VARCHAR2(20) NOT NULL,
+  dlicense		  VARCHAR2(20) NOT NULL,
+  fromTimestamp	TIMESTAMP,
+  toTimestamp   TIMESTAMP,
   FOREIGN KEY (vtname) REFERENCES VehicleType,
-  FOREIGN KEY (cellphone) REFERENCES Customer,
+  FOREIGN KEY (dlicense) REFERENCES Customer
 );
 
 CREATE TABLE Rental (
-	rid 				NUMBER PRIMARY KEY,
-  vid 				NUMBER NOT NULL,
-  cellphone 	NUMBER NOT NULL,
-  fromDate		DATE NOT NULL,
-  fromTime 		interval day (0) to second(0) NOT NULL,
-  toDate			DATE NOT NULL,
-  toTime			interval day (0) to second(0) NOT NULL,
-  odometer		NUMBER,
-  cardName		VARCHAR2(20),
-  cardNo			VARCHAR2(20),
-  ExpDate			DATE,
-  confNo			NUMBER,
+	rid 				  NUMBER PRIMARY KEY,
+  vid 				  NUMBER NOT NULL,
+  dlicense 	    VARCHAR2(20) NOT NULL,
+  fromTimestamp	TIMESTAMP,
+  toTimestamp	  TIMESTAMP,
+  odometer		  NUMBER,
+  cardName		  VARCHAR2(20),
+  cardNo			  VARCHAR2(20),
+  ExpDate			  DATE,
+  confNo			  NUMBER,
   FOREIGN KEY (vid) REFERENCES Vehicle,
-  FOREIGN KEY (cellphone) REFERENCES Customer,
+  FOREIGN KEY (dlicense) REFERENCES Customer,
   FOREIGN KEY (confNo) REFERENCES Reservation
 );
 
 
 CREATE TABLE Return(
-	rid NUMBER PRIMARY KEY,
-  "date" DATE,
-  time DATE,
-  odometer NUMBER,
-  fulltank NUMBER,
+	rid       NUMBER PRIMARY KEY,
+  "date"    DATE,
+  time      DATE,
+  odometer  NUMBER,
+  fulltank  NUMBER,
   value NUMBER,
-  FOREIGN KEY(rid) REFERENCES Rent
+  FOREIGN KEY(rid) REFERENCES Rental
 );
