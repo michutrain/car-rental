@@ -22,7 +22,7 @@ public class customer {
 
         while (!quit)
         {
-            // This needs to be broken into function calls like in branch
+            // This needs to be broken into function calls like in Util.Branch
             System.out.print("\n\nPlease choose one of the following: \n");
             System.out.print("\nCustomer Menu: \n");
             System.out.print("Car Type:\n");

@@ -11,8 +11,8 @@ CREATE TABLE VehicleType(
 );
 
 CREATE TABLE Vehicle(
-  vid       NUMBER PRIMARY KEY,
-  vlicense  CHAR(6),
+  vlicense  CHAR(6) PRIMARY KEY,
+  vid       NUMBER,
   make      VARCHAR2(20),
   model     VARCHAR2(20),
   year      NUMBER,
@@ -20,8 +20,7 @@ CREATE TABLE Vehicle(
   odometer  NUMBER,
   status    CHAR(8),
   vtname    VARCHAR2(20) NOT NULL,
-  location  VARCHAR2(20),
-  city      VARCHAR2(20),
+  branch    VARCHAR2(20),
   FOREIGN KEY(vtname) REFERENCES VehicleType
 );
 
@@ -45,7 +44,7 @@ CREATE TABLE Reservation(
 
 CREATE TABLE Rental (
 	rid 				  NUMBER PRIMARY KEY,
-  vid 				  NUMBER NOT NULL,
+  vlicense 		  CHAR(6) NOT NULL,
   dlicense 	    VARCHAR2(20) NOT NULL,
   fromTimestamp	TIMESTAMP,
   toTimestamp	  TIMESTAMP,
@@ -54,7 +53,7 @@ CREATE TABLE Rental (
   cardNo			  VARCHAR2(20),
   ExpDate			  DATE,
   confNo			  NUMBER,
-  FOREIGN KEY (vid) REFERENCES Vehicle,
+  FOREIGN KEY (vlicense) REFERENCES Vehicle,
   FOREIGN KEY (dlicense) REFERENCES Customer,
   FOREIGN KEY (confNo) REFERENCES Reservation
 );

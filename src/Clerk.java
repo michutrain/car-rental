@@ -1,11 +1,10 @@
-import oracle.sql.TIMESTAMP;
+import Util.Branch;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class Clerk {
+    private Statement stmt;
+
     private PreparedStatement rentVehicle;
     private PreparedStatement returnVehicle;
 
@@ -14,16 +13,20 @@ public class Clerk {
 
     void initialize() {
         try {
-            rentVehicle = branch.con.prepareStatement(
-                    "INSERT INTO Rental" +
-                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
+            stmt = MainMenu.con.createStatement();
+
+            rentVehicle = MainMenu.con.prepareStatement(
+                    "INSERT INTO RENTAL" +
+                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
 
-            returnVehicle = branch.con.prepareStatement(
-                    "INSERT INTO \"Return\"" +
-                            "(rid, stamp, fulltank, odometer, \"value\")" +
-                            "VALUES (?, ?, ?, ?, ?)");
+            returnVehicle = MainMenu.con.prepareStatement(
+                    "INSERT INTO RETURN" +
+                            "(rid, stamp, fulltank, odometer, VALUE)" +
+                            "VALUES (?, ?, ?, ?, ?)"
+            );
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,7 +46,6 @@ public class Clerk {
         rentVehicle.setLong(9, confNo);
 
         rentVehicle.executeUpdate();
-        rentVehicle.clearParameters();
     }
 
     void returnVehicle(long rid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
@@ -51,22 +53,62 @@ public class Clerk {
         returnVehicle.setTimestamp(1, stamp);
         returnVehicle.setLong(2, fullTank);
         returnVehicle.setLong(3, odometer);
-        returnVehicle
+        returnVehicle.setLong(4, value);
+
+        returnVehicle.executeUpdate();
+        calculateAndDisplayCost(rid, stamp, fullTank, odometer, value);
+    }
+
+    void calculateAndDisplayCost(long rid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
+
+        ResultSet rs = stmt.executeQuery("SELECT * FROM RENTAL WHERE RID = " + rid);
+        long vid = rs.getLong("VID");
+        Timestamp from = rs.getTimestamp("FROMTIMESTAMP");
+        long confNum = rs.getLong("CONFNO");
+
+        rs = stmt.executeQuery("SELECT * FROM VEHICLETYPE WHERE VTNAME IN (" +
+                "SELECT VTNAME FROM VEHICLE WHERE VLICENSE = " + vid + ")");
+
+        // TODO: CALCULATE THE COST
     }
 
     /**
      * Generates daily rentals report
-     * @param br The branch specified. If null, will generate report for all branches
+     * @param br The Branch specified. If null, will generate report for all branches
      */
-    void generateDailyRentalsReport(branch br) {
+    void generateDailyRentalsReport(Branch br) throws SQLException {
+        ResultSet rs;
+
+        if (br == null) {
+            rs = stmt.executeQuery(
+                            "SELECT BRANCH, VTNAME " +
+                                "FROM VEHICLE " +
+                                "WHERE VLICENSE IN (" +
+                                    "SELECT VLICENSE " +
+                                    "FROM RENTAL" +
+                                ")" +
+                                "GROUP BY BRANCH, VTNAME");
+        } else {
+            rs = stmt.executeQuery(
+                        "SELECT VTNAME " +
+                            "FROM VEHICLE " +
+                            "WHERE VLICENSE IN (" +
+                                "SELECT VLICENSE " +
+                                "FROM RENTAL" +
+                            ")" +
+                            "GROUP BY VTNAME"
+            );
+        }
+
+
 
     }
 
     /**
      * Generates daily returns report
-     * @param br The branch specified. If null, will generate report for all branches
+     * @param br The Branch specified. If null, will generate report for all branches
      */
-    void generateDailyReturnsReport(branch br) {
+    void generateDailyReturnsReport(Branch br) {
 
     }
 }
