@@ -15,7 +15,7 @@ public class MainMenu implements ActionListener {
     // command line reader
     private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    public static Connection con;
+    public Connection con;
 
     // user is allowed 3 login attempts
     private int loginAttempts = 0;
@@ -146,7 +146,7 @@ public class MainMenu implements ActionListener {
     {
         int choice;
         boolean quit;
-        CustomerUI c = new CustomerUI();
+        CustomerUI c = new CustomerUI(this);
         ClerkUI clerk = new ClerkUI();
         int currentChoice = 0;
         quit = false;
