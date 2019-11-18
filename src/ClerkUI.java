@@ -5,7 +5,6 @@ import java.sql.*;
 
 public class ClerkUI {
         Clerk clerk = new Clerk();
-        Connection con;
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
         public void dailyRentalReport(int bid){
@@ -28,8 +27,6 @@ public class ClerkUI {
             int choice = 0;
             boolean quit = false;
             try {
-                // disable auto commit mode
-                con.setAutoCommit(false);
 
                 while (!quit) {
                     if (choice == 0) {
@@ -67,14 +64,12 @@ public class ClerkUI {
                 }
 
                 System.out.println("Returning to Clerk Menu\n");
-                clerkMenu(con);
-            } catch (SQLException ex) {
-                System.out.println("Message: " + ex.getMessage());
+                clerkMenu();
             } catch (IOException e) {
                 System.out.println("IOException!");
 
                 try {
-                    con.close();
+                    MainMenu.con.close();
                     System.exit(-1);
                 } catch (SQLException ex) {
                     System.out.println("Message: " + ex.getMessage());
@@ -100,7 +95,7 @@ public class ClerkUI {
 
                 try
                 {
-                    con.close();
+                    MainMenu.con.close();
                     System.exit(-1);
                 }
                 catch (SQLException ex)
@@ -166,7 +161,7 @@ public class ClerkUI {
 
                 try
                 {
-                    con.close();
+                    MainMenu.con.close();
                     System.exit(-1);
                 }
                 catch (SQLException ex)
@@ -176,8 +171,7 @@ public class ClerkUI {
             }
         }
 
-        public void clerkMenu(Connection con){
-            this.con = con;
+        public void clerkMenu(){
             MainMenu b = new MainMenu();
             int firstChoice = 0;
             boolean quit;
@@ -186,7 +180,7 @@ public class ClerkUI {
             try
             {
                 // disable auto commit mode
-                con.setAutoCommit(false);
+                MainMenu.con.setAutoCommit(false);
 
                 while (!quit)
                 {
@@ -219,7 +213,7 @@ public class ClerkUI {
                 }
 
                 System.out.println("Returning to Home Screen\n");
-                b.showMenu(con);
+                b.showMenu();
             }
             catch (SQLException ex) {
                 System.out.println("Message: " + ex.getMessage());
@@ -230,7 +224,7 @@ public class ClerkUI {
 
                 try
                 {
-                    con.close();
+                    MainMenu.con.close();
                     System.exit(-1);
                 }
                 catch (SQLException ex)
