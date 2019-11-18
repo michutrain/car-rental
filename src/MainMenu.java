@@ -147,6 +147,7 @@ public class MainMenu implements ActionListener {
         int choice;
         boolean quit;
         customer c = new customer();
+        ClerkUI clerk = new ClerkUI();
         int currentChoice = 0;
         quit = false;
 
@@ -160,13 +161,14 @@ public class MainMenu implements ActionListener {
 
                 if(currentChoice == 1) {
                     c.customerMenu(con);
+                } else if (currentChoice == 2) {
+                    clerk.clerkMenu(con);
                 } else {
                     System.out.print("---------------Main Menu---------------");
                     System.out.print("\nPlease choose one of the following: \n");
 
                     System.out.print("1:  Customer Menu: \n");
-                    System.out.print("2:  Reports \n");
-                    System.out.print("3:  Clerk \n");
+                    System.out.print("2:  Clerk \n");
                     System.out.print("5.  Quit\n>> ");
                 }
 
@@ -177,6 +179,7 @@ public class MainMenu implements ActionListener {
                 switch(choice)
                 {
                     case 1:  currentChoice = 1; break;
+                    case 2:  currentChoice = 2; break;
                     case 5:  quit = true;
                 }
             }
