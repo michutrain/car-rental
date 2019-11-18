@@ -122,7 +122,7 @@ public class MainMenu implements ActionListener {
             // if the username and password are valid,
             // remove the login window and display a text menu
             mainFrame.dispose();
-            showMenu(con);
+            showMenu();
         }
         else
         {
@@ -142,11 +142,11 @@ public class MainMenu implements ActionListener {
     /*
      * displays simple text interface
      */
-    public void showMenu(Connection con)
+    public void showMenu()
     {
         int choice;
         boolean quit;
-        customer c = new customer();
+        CustomerUI c = new CustomerUI();
         ClerkUI clerk = new ClerkUI();
         int currentChoice = 0;
         quit = false;
@@ -160,15 +160,15 @@ public class MainMenu implements ActionListener {
             {
 
                 if(currentChoice == 1) {
-                    c.customerMenu(con);
+                    c.customerMenu();
                 } else if (currentChoice == 2) {
-                    clerk.clerkMenu(con);
+                    clerk.clerkMenu();
                 } else {
                     System.out.print("---------------Main Menu---------------");
                     System.out.print("\nPlease choose one of the following: \n");
 
                     System.out.print("1:  Customer Menu: \n");
-                    System.out.print("2:  Clerk \n");
+                    System.out.print("2:  Clerk Menu\n");
                     System.out.print("5.  Quit\n>> ");
                 }
 
