@@ -6,7 +6,7 @@ import java.sql.*;
 public class CustomerUI {
     private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    public void makeReservation(){
+    public void makeReservation() {
         try {
             String carType;
             String location;
@@ -30,27 +30,26 @@ public class CustomerUI {
             String rTime = in.readLine();
 
 
-            if(location.isEmpty() || carType.isEmpty() || puDay.isEmpty() || puTime.isEmpty() || rDay.isEmpty() || rTime.isEmpty()){
+            if (location.isEmpty() || carType.isEmpty() || puDay.isEmpty() || puTime.isEmpty() || rDay.isEmpty() || rTime.isEmpty()) {
                 System.out.print("Invalid Parameters\n");
             }
 
             int available = c.getAvailableVehiclesCount(carType, location, puDay, puTime, rDay, rTime);
-            if(available > 0) {
+            if (available > 0) {
 
                 boolean confirmed = false;
                 String pNum = "";
                 String name = "";
-                while(!confirmed) {
-                    if(pNum.isEmpty()){
+                while (!confirmed) {
+                    if (pNum.isEmpty()) {
                         System.out.print("Please provide a valid Phone Number:\n");
                         pNum = in.readLine();
-                    }
-                    else if (name.isEmpty()){
+                    } else if (name.isEmpty()) {
                         System.out.print("Please Provide a Valid Name\n");
                         name = in.readLine();
                     } else {
                         boolean isValid = c.validCustomer(name, pNum);
-                        if(!isValid){
+                        if (!isValid) {
                             c.addCustomer(name, pNum);
                             System.out.print("No Existing Customer Found - " + name + " added to Customers Database\n");
                         }
@@ -65,17 +64,15 @@ public class CustomerUI {
             } else {
                 System.out.print("No Available Vehicles\n");
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("IOException!");
         }
 
     }
 
     public void showAvailableVehicles() {
-        customer c = new customer();
-        try{
+        customer c = new customer(this.mainMenu);
+        try {
             System.out.print("Location: \n");
             String loc = in.readLine();
 
@@ -95,50 +92,45 @@ public class CustomerUI {
             String rTime = in.readLine();
 
             int count = c.getAvailableVehiclesCount(vType, loc, puDay, puTime, rDay, rTime);
-            System.out.print("Available Vehicles: " + count +  "\n");
+            System.out.print("Available Vehicles: " + count + "\n");
 
             System.out.print("See Vehicles Details: \n");
             System.out.print("1: Yes\n");
             System.out.print("2: No\n");
             int details = Integer.parseInt(in.readLine());
-            if(details == 1){
+            if (details == 1) {
                 c.showAvailableVehiclesDetails(vType, loc, puDay, puTime, rDay, rTime);
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("IOException!");
 
-            try
-            {
+            try {
                 MainMenu.con.close();
                 System.exit(-1);
-            }
-            catch (SQLException ex)
-            {
+            } catch (SQLException ex) {
                 System.out.println("Message: " + ex.getMessage());
             }
         }
     }
 
-    public void customerMenu(){
-        MainMenu b = new MainMenu();
+    MainMenu mainMenu;
+
+    public void customerMenu(MainMenu mainMenu) {
+        this.mainMenu = mainMenu;
         int firstChoice = 0;
         boolean quit;
         quit = false;
 
-        try
-        {
-            while (!quit)
-            {
-                if(firstChoice == 0){
+        try {
+            while (!quit) {
+                if (firstChoice == 0) {
                     System.out.print("\nCustomer Menu: \n");
                     System.out.print("1:  View Available Vehicles\n");
                     System.out.print("2:  Make a Reservation\n");
                     System.out.print("5:  Back to Main Menu\n");
                     firstChoice = Integer.parseInt(in.readLine());
                 }
-                if(firstChoice == 1) {
+                if (firstChoice == 1) {
                     showAvailableVehicles();
                     firstChoice = 0;
                 } else if (firstChoice == 2) {
@@ -155,19 +147,13 @@ public class CustomerUI {
             }
 
             System.out.println("Returning to Home Screen\n");
-            b.showMenu();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("IOException!");
 
-            try
-            {
-                MainMenu.con.close();
+            try {
+                this.mainMenu.con.close();
                 System.exit(-1);
-            }
-            catch (SQLException ex)
-            {
+            } catch (SQLException ex) {
                 System.out.println("Message: " + ex.getMessage());
             }
         }
