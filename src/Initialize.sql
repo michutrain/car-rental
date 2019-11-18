@@ -18,7 +18,7 @@ CREATE TABLE Vehicle(
   year      NUMBER,
   color     VARCHAR2(20),
   odometer  NUMBER,
-  status    CHAR(8),
+  status    NUMBER,
   vtname    VARCHAR2(20) NOT NULL,
   location  VARCHAR2(20),
   city      VARCHAR2(20),
