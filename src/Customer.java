@@ -1,7 +1,11 @@
+import Util.TimeInterval;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Customer {
 
@@ -44,7 +48,7 @@ public class Customer {
         "SELECT * FROM VEHICLE WHERE vtname = ? and location = ?";
 
     private final String getAvailableVehiclesCountQuery =
-        "SELECT count(*) FROM Vehicle WHERE vtname = ? and location = ?";
+        "SELECT * FROM Vehicle";
 
     public Customer(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
@@ -103,8 +107,7 @@ public class Customer {
     }
 
         
-    public int makeReservation(String vtname, String dlincense,
-        String fromTimestamp, String toTimestamp) throws SQLException{
+    public int makeReservation(String vtname, String dlincense, TimeInterval interval) throws SQLException{
         // TODO: Make a reservation for the parameters
         // TODO: Set the vehicle Status to reserved
         // TODO: return the confirmation number (reservation CONFNO)
@@ -115,8 +118,8 @@ public class Customer {
             setVehicleStatus(result.getInt("vid"), 1);
             makeReservation.setString(0, vtname);
             makeReservation.setString(1, dlincense);
-            makeReservation.setString(2, fromTimestamp);
-            makeReservation.setString(3, toTimestamp);
+            makeReservation.setString(2, interval.getFrom().toString());
+            makeReservation.setString(3, interval.getTo().toString());
             
             return makeReservation.executeUpdate();
         }
@@ -131,51 +134,100 @@ public class Customer {
         return results.getInt("total") > 0;
     }
 
-    public int getAvailableVehiclesCount(String carType, String location) throws SQLException {
-        getAvailableVehiclesCount.setString(0, carType == null ? "*" : carType);
-        getAvailableVehiclesCount.setString(1, location == null ? "*" : location);
-        ResultSet results = getAvailableVehiclesCount.executeQuery();
+    public int getAvailableVehiclesCount(String carType, String location, TimeInterval interval) throws SQLException {
+        Statement stmt = mainMenu.con.createStatement();
+
+        String sqlStatement = getAvailableVehiclesCountQuery;
+
+        if (carType != null) {
+            sqlStatement += " WHERE vtname = " + carType;
+
+            if (location != null) {
+                sqlStatement += " AND location = " + location;
+            }
+
+            if (interval != null) {
+                // TODO
+            }
+        }
+
+        else if (location != null) {
+            sqlStatement += "WHERE location = " + location;
+
+            if (interval != null) {
+                // TODO
+            }
+        }
+        else if (interval != null) {
+            // TODO
+        }
+
+//        boolean isFirstAttributeToFilr = true;
+//        if (carType != null)
+//            sqlStatement += "WHERE
+//            isFirstAttributeToFilter false;
+
+//            sqlStatement += " vtname " + carType;
+//
+
+//        if (location != null)
+//            if (!isFirstAttributeToFier) {
+//                sqlStatement += " AND";
+//            } else {
+//                sqlStatement += " WHERE";
+//                isFirstAttributeToFilter = false;
+//            }
+//
+//            sqlStatement += " location = " + location;
+//        }
+//
+//        if (timestamp != null) {
+//            if (!isFirstAttributeToFilter) {
+//                sqlStatement += " AND";
+//            } else {
+//                sqlStatement += "WHERE ";
+//            }
+//        }
+
+        sqlStatement += " ORDER BY location, vtname";
+
+        ResultSet results = stmt.executeQuery(sqlStatement);
         return results.getInt("total");
     }
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
         ResultSet rs;
 
-        try {
-            // TODO: This needs to work if any/all of the above params are empty
-            // TODO: If all params are empty, returns all available vehicles at that branch
-            getAvailableVehiclesDetails.setString(0, carType == null ? "*" : carType);
-            getAvailableVehiclesDetails.setString(1, location == null ? "*" : location);
-            rs = getAvailableVehiclesDetails.executeQuery();
+        // TODO: This needs to work if any/all of the above params are empty
+        // TODO: If all params are empty, returns all available vehicles at that branch
+        getAvailableVehiclesDetails.setString(0, carType == null ? "*" : carType);
+        getAvailableVehiclesDetails.setString(1, location == null ? "*" : location);
+        rs = getAvailableVehiclesDetails.executeQuery();
 
-            // get info on ResultSet
-            ResultSetMetaData rsmd = rs.getMetaData();
+        // get info on ResultSet
+        ResultSetMetaData rsmd = rs.getMetaData();
 
-            // get number of columns
-            int numCols = rsmd.getColumnCount() > 15 ? 15 : rsmd.getColumnCount();
+        // get number of columns
+        int numCols = rsmd.getColumnCount() > 15 ? 15 : rsmd.getColumnCount();
 
-            System.out.println();
+        System.out.println();
 
-            // display column names;
-            for (int i = 0; i < numCols; i++) {
-                // get column name and print it
-                System.out.printf("%-15s", rsmd.getColumnName(i + 1));
-            }
-            int count = 0;
-            while (rs.next() && count < 15) {
-                String make = rs.getString("MAKE");
-                System.out.printf("%-10.10s", make);
+        // display column names;
+        for (int i = 0; i < numCols; i++) {
+            // get column name and print it
+            System.out.printf("%-15s", rsmd.getColumnName(i + 1));
+        }
+        int count = 0;
+        while (rs.next() && count < 15) {
+            String make = rs.getString("MAKE");
+            System.out.printf("%-10.10s", make);
 
-                String model = rs.getString("MODEL");
-                System.out.printf("%-20.20s", model);
+            String model = rs.getString("MODEL");
+            System.out.printf("%-20.20s", model);
 
-                String vLocation = rs.getString("LOCATION");
-                System.out.printf("%-20.20s", vLocation);
-                count++;
-            }
-        } catch (SQLException ex) {
-            System.out.println("Message: " + ex.getMessage());
+            String vLocation = rs.getString("LOCATION");
+            System.out.printf("%-20.20s", vLocation);
+            count++;
         }
     }
-
 }
