@@ -145,7 +145,7 @@ public class ClerkUI {
                             System.out.print("Please Provide a Valid Name\n");
                             name = in.readLine();
                         } else {
-                            // TODO: Check if customer is part of database
+                            // TODO: Check if Customer is part of database
                                 // Customer is part of Database: change vehicle status to rented
                                 // Customer is not part of Database: Ask for Necessary information to add to database and add them
                             confirmed = true;
