@@ -11,6 +11,7 @@ public class CustomerUI {
     MainMenu mainMenu;
 
     public CustomerUI(MainMenu mainMenu) throws SQLException {
+
         this.mainMenu = mainMenu;
         int firstChoice = 0;
         boolean quit;

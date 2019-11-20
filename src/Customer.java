@@ -76,33 +76,33 @@ public class Customer {
 
     void addVehicle(long vid, long vlicense, String make, String model, long year, String color, long odometer,
                     String status, String vtname, String location, String city) throws SQLException {
-        addVehicle.setLong(0, vid);
-        addVehicle.setLong(1, vlicense);
-        addVehicle.setString(2, make);
-        addVehicle.setString(3, model);
-        addVehicle.setLong(4, year);
-        addVehicle.setString(5, color);
-        addVehicle.setLong(6, odometer);
-        addVehicle.setString(7, status);
-        addVehicle.setString(8, vtname);
-        addVehicle.setString(9, location);
-        addVehicle.setString(10, city);
+        addVehicle.setLong(1, vid);
+        addVehicle.setLong(2, vlicense);
+        addVehicle.setString(3, make);
+        addVehicle.setString(4, model);
+        addVehicle.setLong(5, year);
+        addVehicle.setString(6, color);
+        addVehicle.setLong(7, odometer);
+        addVehicle.setString(8, status);
+        addVehicle.setString(9, vtname);
+        addVehicle.setString(10, location);
+        addVehicle.setString(11, city);
 
         addVehicle.executeUpdate();
     }
 
     public void addCustomer(String dlicense, String name, long phoneNum, String address) throws SQLException {
-        addCustomer.setString(0, dlicense);
-        addCustomer.setString(1, name);
-        addCustomer.setLong(2, phoneNum);
-        addCustomer.setString(3, address);
+        addCustomer.setString(1, dlicense);
+        addCustomer.setString(2, name);
+        addCustomer.setLong(3, phoneNum);
+        addCustomer.setString(4, address);
 
         addVehicle.executeUpdate();
     }
 
     private void setVehicleStatus(long vid, int status) throws SQLException { // 0: available, 1: rented, 2: maintainence
-        getVehicleStatement.setInt(0, status);
-        getVehicleStatement.setLong(1, vid);
+        getVehicleStatement.setInt(1, status);
+        getVehicleStatement.setLong(2, vid);
         getVehicleStatement.executeQuery();
     }
 
@@ -112,14 +112,14 @@ public class Customer {
         // TODO: Set the vehicle Status to reserved
         // TODO: return the confirmation number (reservation CONFNO)
         
-        getAvailableVehicle.setString(0, vtname);
+        getAvailableVehicle.setString(1, vtname);
         ResultSet result = getAvailableVehicle.executeQuery();
         if (result.next()) {
-            setVehicleStatus(result.getInt("vid"), 1);
-            makeReservation.setString(0, vtname);
-            makeReservation.setString(1, dlincense);
-            makeReservation.setString(2, interval.getFrom().toString());
-            makeReservation.setString(3, interval.getTo().toString());
+            setVehicleStatus(result.getInt("vid"), 2);
+            makeReservation.setString(1, vtname);
+            makeReservation.setString(2, dlincense);
+            makeReservation.setString(3, interval.getFrom().toString());
+            makeReservation.setString(4, interval.getTo().toString());
             
             return makeReservation.executeUpdate();
         }
@@ -129,7 +129,7 @@ public class Customer {
     }
 
     public boolean validCustomer(String phoneNum) throws SQLException {
-        getCustomerByPhoneNum.setString(0, phoneNum);
+        getCustomerByPhoneNum.setString(1, phoneNum);
         ResultSet results = getCustomerByPhoneNum.executeQuery();
         return results.getInt("total") > 0;
     }
@@ -200,8 +200,8 @@ public class Customer {
 
         // TODO: This needs to work if any/all of the above params are empty
         // TODO: If all params are empty, returns all available vehicles at that branch
-        getAvailableVehiclesDetails.setString(0, carType == null ? "*" : carType);
-        getAvailableVehiclesDetails.setString(1, location == null ? "*" : location);
+        getAvailableVehiclesDetails.setString(1, carType == null ? "*" : carType);
+        getAvailableVehiclesDetails.setString(2, location == null ? "*" : location);
         rs = getAvailableVehiclesDetails.executeQuery();
 
         // get info on ResultSet

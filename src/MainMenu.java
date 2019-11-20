@@ -146,21 +146,20 @@ public class MainMenu implements ActionListener {
     {
         int choice;
         boolean quit;
-        CustomerUI c = new CustomerUI(this);
         ClerkUI clerk = new ClerkUI();
         int currentChoice = 0;
         quit = false;
 
         try
         {
-            // disable auto commit mode
-            con.setAutoCommit(false);
+//            // disable auto commit mode
+//            con.setAutoCommit(false);
 
             while (!quit)
             {
 
                 if(currentChoice == 1) {
-                    c.customerMenu();
+                    CustomerUI c = new CustomerUI(this);
                 } else if (currentChoice == 2) {
                     clerk.clerkMenu();
                 } else {

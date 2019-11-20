@@ -1,3 +1,4 @@
+import Util.Branch;
 import oracle.sql.TIMESTAMP;
 
 import java.sql.Date;
@@ -59,7 +60,7 @@ public class Clerk {
      * Generates daily rentals report
      * @param br The branch specified. If null, will generate report for all branches
      */
-    void generateDailyRentalsReport(branch br) {
+    void generateDailyRentalsReport(Branch br) {
 
     }
 
@@ -67,7 +68,7 @@ public class Clerk {
      * Generates daily returns report
      * @param br The branch specified. If null, will generate report for all branches
      */
-    void generateDailyReturnsReport(branch br) {
+    void generateDailyReturnsReport(Branch br) {
 
     }
 }
