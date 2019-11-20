@@ -1,74 +1,90 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class customer {
-//    Connection con;
-    public void customerMenu(Connection con){
-        MainMenu b = new MainMenu();
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        int choice;
-        boolean quit;
-        int currentChoice = 0;
 
-        quit = false;
-
-    try
-    {
-        // disable auto commit mode
-        con.setAutoCommit(false);
-
-        while (!quit)
-        {
-            // This needs to be broken into function calls like in Util.Branch
-            System.out.print("\n\nPlease choose one of the following: \n");
-            System.out.print("\nCustomer Menu: \n");
-            System.out.print("Car Type:\n");
-            System.out.print("1:  Fast Car\n");
-            System.out.print("2:  Slow Car\n");
-
-            System.out.print("Location\n");
-            System.out.print("3:  Place A\n");
-            System.out.print("4:  Place B\n");
-
-            System.out.print("Time Interval\n");
-            System.out.print("5:  1 hour\n");
-            System.out.print("6:  2 hours\n");
-
-            System.out.print("50.  Back\n>> ");
-
-            choice = Integer.parseInt(in.readLine());
-
-            System.out.println(" ");
-
-            switch(choice)
-            {
-                case 1:   System.out.print("\nFast Car Chosen\n");; break;
-                case 50:  quit = true;
-            }
-        }
-
-        System.out.println("\nReturning to Home Screen\n\n");
-        b.showMenu(con);
+    public void addVehicle() {
+//        try {
+//            ps = con.prepareStatement(
+//            "INSERT INTO VEHICLE(vid, vlicense, make, model, year, color, odometer, status, vtname, location, city)" +
+//                    "VALUES (1234, '4321', 'Ford', 'Mustang', '2019', 'Red', 0, 'True', 'car', 'Kits', 'Vancouver')");
+//            ps.executeUpdate();
+//            System.out.println("Car Added\n");
+//        } catch (SQLException ex) {
+//            System.out.println("Message: " + ex.getMessage());
+//        }
     }
-    catch (IOException e)
-    {
-        System.out.println("IOException!");
+
+    public void addCustomer(String name, String phoneNum){
+        // TODO: Add customer to database
+    }
+
+    public int makeReservation(String carType, String location, String fromDay, String fromTime, String toDay, String toTime){
+        // TODO: Make a reservation for the parameters
+        // TODO: Set the vehicle Status to reserved
+        // TODO: return the confirmation number (reservation CONFNO)
+        return 0; // stub
+    }
+
+    public boolean validCustomer(String name, String phoneNum){
+        // TODO: Check is a customer is a valid customer or not
+        return false;
+    }
+
+    public int getAvailableVehiclesCount(String carType, String location, String fromDay, String fromTime, String toDay, String toTime) {
+        // TODO: Get the number of available vehicles matching the inputs (inputs could be null) and return it as a string
+        return 0; // Stub
+    }
+
+    public void showAvailableVehiclesDetails(String carType, String location, String fromDay, String fromTime, String toDay, String toTime) {
+        Statement stmt;
+        ResultSet rs;
 
         try
         {
-            con.close();
-            System.exit(-1);
+            // TODO: This needs to work if any/all of the above params are empty
+            // TODO: If all params are empty, returns all available vehicles at that branch
+            stmt = MainMenu.con.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM VEHICLE"); // TODO: Needs to have a condition
+
+            // get info on ResultSet
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            // get number of columns
+            int numCols = rsmd.getColumnCount() > 15 ? 15 : rsmd.getColumnCount();
+
+            System.out.println(" ");
+
+            // display column names;
+            for (int i = 0; i < numCols; i++)
+            {
+                // get column name and print it
+                System.out.printf("%-15s", rsmd.getColumnName(i+1));
+            }
+            int count = 0;
+            while(rs.next() && count < 15)
+            {
+                String make = rs.getString("MAKE");
+                System.out.printf("%-10.10s", make);
+
+                String model = rs.getString("MODEL");
+                System.out.printf("%-20.20s", model);
+
+                String vLocation = rs.getString("LOCATION");
+                System.out.printf("%-20.20s", vLocation);
+                count++;
+            }
+
+            // close the statement;
+            // the ResultSet will also be closed
+            stmt.close();
         }
         catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
         }
     }
-    catch (SQLException ex) {
-        System.out.println("Message: " + ex.getMessage());
-    }
-    }
+
 }
