@@ -18,7 +18,7 @@ CREATE TABLE Vehicle(
   year      NUMBER,
   color     VARCHAR2(20),
   odometer  NUMBER,
-  status    CHAR(8),
+  status    NUMBER,
   vtname    VARCHAR2(20) NOT NULL,
   branch    VARCHAR2(20),
   FOREIGN KEY(vtname) REFERENCES VehicleType
