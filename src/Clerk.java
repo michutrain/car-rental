@@ -1,30 +1,32 @@
 import Util.Branch;
 import oracle.sql.TIMESTAMP;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class Clerk {
+    private Connection con;
+
     private PreparedStatement rentVehicle;
     private PreparedStatement returnVehicle;
 
     private PreparedStatement rentalsReport;
     private PreparedStatement returnReport;
 
-    void initialize() {
-        try {
-            rentVehicle = MainMenu.con.prepareStatement(
-                    "INSERT INTO Rental" +
-                    "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            );
+    private final String rentVehicleQuery =
+            "INSERT INTO Rental" +
+            "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer, cardName, cardNo, ExpDate, confNo)" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            returnVehicle = MainMenu.con.prepareStatement(
-                    "INSERT INTO \"Return\"" +
-                            "(rid, stamp, fulltank, odometer, \"value\")" +
-                            "VALUES (?, ?, ?, ?, ?)");
+    private final String returnVehicleQuery =
+            "INSERT INTO \"Return\"" +
+            "(rid, stamp, fulltank, odometer, \"value\")" +
+             "VALUES (?, ?, ?, ?, ?)";
+
+    public Clerk(Connection con) {
+        try {
+            rentVehicle = con.prepareStatement(rentVehicleQuery);
+            returnVehicle = con.prepareStatement(returnVehicleQuery);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,7 +63,7 @@ public class Clerk {
      * @param br The branch specified. If null, will generate report for all branches
      */
     void generateDailyRentalsReport(Branch br) {
-
+        // TODO
     }
 
     /**
@@ -69,6 +71,6 @@ public class Clerk {
      * @param br The branch specified. If null, will generate report for all branches
      */
     void generateDailyReturnsReport(Branch br) {
-
+        // TODO
     }
 }

@@ -82,8 +82,8 @@ public class CustomerUI {
             System.out.print("Invalid Parameters\n");
         }
 
-        int available = 0;
-        // int available = c.getAvailableVehiclesCount(carType, location, puDay, puTime, rDay, rTime); // TODO Replace times and days with one timeInterval
+        TimeInterval timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
+        int available = c.getAvailableVehiclesCount(carType, location, timeInterval);
         if (available > 0) {
 
             boolean confirmed = false;
@@ -102,7 +102,7 @@ public class CustomerUI {
                         // c.addCustomer(pNum); TODO FIX
                         System.out.print("No Existing Customer Found - " + name + " added to Customers Database\n");
                     }
-                    int confNum = 0;//  c.makeReservation(carType, location, puDay, puTime, rDay, rTime); TODO FIX
+                    int confNum = c.makeReservation(carType, location, timeInterval);
                     System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
                             "Pickup: " + puDay + " " + puTime + "\n" +
                             "Return: " + rDay + " " + rTime + "\n" +
@@ -116,7 +116,7 @@ public class CustomerUI {
     }
 
     public void showAvailableVehicles() throws SQLException, IOException {
-        Customer c = new Customer(this.mainMenu);
+        Customer c = new Customer(mainMenu);
 //        try {
             System.out.print("Location: \n");
             String loc = in.readLine();

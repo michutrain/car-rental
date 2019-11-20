@@ -146,7 +146,7 @@ public class MainMenu implements ActionListener {
     {
         int choice;
         boolean quit;
-        ClerkUI clerk = new ClerkUI();
+        ClerkUI clerk = new ClerkUI(this);
         int currentChoice = 0;
         quit = false;
 

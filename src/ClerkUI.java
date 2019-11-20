@@ -4,9 +4,14 @@ import java.io.InputStreamReader;
 import java.sql.*;
 
 public class ClerkUI {
-    Clerk clerk = new Clerk();
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    Clerk clerk;
     private MainMenu mainMenu;
+
+    public ClerkUI(MainMenu mainMenu) {
+        this.mainMenu = mainMenu;
+        clerk = new Clerk(mainMenu.con);
+    }
 
     public void dailyRentalReport(int bid) {
         if (bid == 0) {
