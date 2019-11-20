@@ -3,9 +3,10 @@ out/
 
 // Intellij-related files
 *.iml
-.idea/dataSources/
-.idea/dataSources.local.xml
+.idea/*.iml
 .idea/workspace.xml
+.idea/modules.xml
+.idea/misc.xml
 
 // Eclipse-related files
 .classpath
