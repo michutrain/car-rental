@@ -1,15 +1,3 @@
-CREATE TABLE VehicleType(
-  vtname    VARCHAR2(20) PRIMARY KEY,
-  features  VARCHAR2(50),
-  wrate     NUMBER,
-  drate     NUMBER,
-  hrate     NUMBER,
-  wirate    NUMBER,
-  dirate    NUMBER,
-  hirate    NUMBER,
-  krate     NUMBER
-);
-
 CREATE TABLE Vehicle(
   vid       NUMBER PRIMARY KEY,
   vlicense  VARCHAR2(20),
@@ -20,8 +8,7 @@ CREATE TABLE Vehicle(
   odometer  NUMBER,
   status    NUMBER,
   vtname    VARCHAR2(20) NOT NULL,
-  branch    VARCHAR2(50),
-  FOREIGN KEY(vtname) REFERENCES VehicleType
+  branch    VARCHAR2(50)
 );
 
 
@@ -38,7 +25,6 @@ CREATE TABLE Reservation(
   dlicense		  VARCHAR2(20) NOT NULL,
   fromTimestamp	TIMESTAMP,
   toTimestamp   TIMESTAMP,
-  FOREIGN KEY (vtname) REFERENCES VehicleType,
   FOREIGN KEY (dlicense) REFERENCES Customer,
   CHECK(fromTimestamp < toTimestamp)
 );

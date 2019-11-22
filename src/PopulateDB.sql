@@ -1,20 +1,20 @@
-INSERT ALL
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('Midsize', 'Heated seats, electric windows', 220, 60, 12, 10, 5, 2.5, 0.4)
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('SUV', 'AWD, Heated seats, electric windows', 310, 80, 20, 15, 3, 1, 2)
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('Economy', '2Door, 2WD', 190, 50, 10, 9, 4, 2, 0.4)
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('Compact', '2Door, 2WD', 150, 40, 8, 5, 3, 1, 0.2)
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('Standard', '2Door, 2WD', 230, 65, 12, 6, 3, 1, 1)
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('Fullsize', '2Door, 2WD', 270, 75, 15, 7.5, 3, 1.2, 1.5)
-    Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
-        ('Truck', '200 HP, 4WD', 310, 90, 22, 8, 4, 2, 2.5)
-
-SELECT * FROM dual;
+-- INSERT ALL
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('Midsize', 'Heated seats, electric windows', 220, 60, 12, 10, 5, 2.5, 0.4)
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('SUV', 'AWD, Heated seats, electric windows', 310, 80, 20, 15, 3, 1, 2)
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('Economy', '2Door, 2WD', 190, 50, 10, 9, 4, 2, 0.4)
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('Compact', '2Door, 2WD', 150, 40, 8, 5, 3, 1, 0.2)
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('Standard', '2Door, 2WD', 230, 65, 12, 6, 3, 1, 1)
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('Fullsize', '2Door, 2WD', 270, 75, 15, 7.5, 3, 1.2, 1.5)
+--     Into VehicleType(vtname, features, wrate, drate, hrate, wirate, dirate, hirate, krate) VALUES
+--         ('Truck', '200 HP, 4WD', 310, 90, 22, 8, 4, 2, 2.5)
+--
+-- SELECT * FROM dual;
 
 INSERT ALL
     Into Customer(dlicense, cellphone, name, address) VALUES
