@@ -1,6 +1,9 @@
 package Util;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class TimeInterval {
 
@@ -12,8 +15,13 @@ public class TimeInterval {
         this.to = to;
     }
 
+    /**
+     * Constructs a time interval from the given parameters. Times should be in hh:mm:ss format,
+     * days should be in yyyy-[m]m-[d]d format
+     */
     public TimeInterval(String fromTime, String fromDay, String toTime, String toDay) {
-        // TODO
+        this.from =  Timestamp.valueOf(fromDay + " " + fromTime);
+        this.to = Timestamp.valueOf(toDay + " " + toTime);
     }
 
     public Timestamp getFrom() {

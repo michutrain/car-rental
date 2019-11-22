@@ -1,6 +1,6 @@
 CREATE TABLE VehicleType(
   vtname    VARCHAR2(20) PRIMARY KEY,
-  features  VARCHAR2(20),
+  features  VARCHAR2(50),
   wrate     NUMBER,
   drate     NUMBER,
   hrate     NUMBER,
@@ -11,8 +11,8 @@ CREATE TABLE VehicleType(
 );
 
 CREATE TABLE Vehicle(
-  vlicense  CHAR(6) PRIMARY KEY,
-  vid       NUMBER,
+  vid       NUMBER PRIMARY KEY,
+  vlicense  VARCHAR2(20),
   make      VARCHAR2(20),
   model     VARCHAR2(20),
   year      NUMBER,
@@ -20,50 +20,47 @@ CREATE TABLE Vehicle(
   odometer  NUMBER,
   status    NUMBER,
   vtname    VARCHAR2(20) NOT NULL,
-  branch    VARCHAR2(20),
+  branch    VARCHAR2(50),
   FOREIGN KEY(vtname) REFERENCES VehicleType
 );
 
 
 CREATE TABLE Customer(
   dlicense  VARCHAR2(20) PRIMARY KEY,
-  cellphone NUMBER,
+  cellphone VARCHAR2(20),
   name      VARCHAR2(20),
-  address   VARCHAR2(20)
+  address   VARCHAR2(40)
 );
 
 CREATE TABLE Reservation(
-	confNo			  NUMBER PRIMARY KEY,
+  confNo			  NUMBER PRIMARY KEY,
   vtname			  VARCHAR2(20) NOT NULL,
   dlicense		  VARCHAR2(20) NOT NULL,
   fromTimestamp	TIMESTAMP,
   toTimestamp   TIMESTAMP,
   FOREIGN KEY (vtname) REFERENCES VehicleType,
-  FOREIGN KEY (dlicense) REFERENCES Customer
+  FOREIGN KEY (dlicense) REFERENCES Customer,
+  CHECK(fromTimestamp < toTimestamp)
 );
 
 CREATE TABLE Rental (
-	rid 				  NUMBER PRIMARY KEY,
-  vlicense 		  CHAR(6) NOT NULL,
+  rid 				  NUMBER PRIMARY KEY,
+  vid 				  NUMBER NOT NULL,
   dlicense 	    VARCHAR2(20) NOT NULL,
   fromTimestamp	TIMESTAMP,
   toTimestamp	  TIMESTAMP,
   odometer		  NUMBER,
-  cardName		  VARCHAR2(20),
-  cardNo			  VARCHAR2(20),
-  ExpDate			  DATE,
-  confNo			  NUMBER,
-  FOREIGN KEY (vlicense) REFERENCES Vehicle,
+  FOREIGN KEY (vid) REFERENCES Vehicle,
   FOREIGN KEY (dlicense) REFERENCES Customer,
-  FOREIGN KEY (confNo) REFERENCES Reservation
+  CHECK(fromTimestamp < toTimestamp)
 );
 
 
 CREATE TABLE Return(
-	rid       NUMBER PRIMARY KEY,
+  rid       NUMBER PRIMARY KEY,
+  vid				NUMBER NOT NULL,
   stamp     TIMESTAMP,
-  odometer  NUMBER,
-  fulltank  NUMBER,
-  value NUMBER,
-  FOREIGN KEY(rid) REFERENCES Rental
+  value     NUMBER,
+  FOREIGN KEY(rid) REFERENCES Rental,
+  FOREIGN KEY(vid) REFERENCES Vehicle
 );
