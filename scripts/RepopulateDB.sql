@@ -71,8 +71,6 @@ INSERT INTO Rental(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer) VAL
 INSERT INTO Rental(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer) VALUES
          (10, 192839, '007', TIMESTAMP '2019-12-17 12:00:00', TIMESTAMP '2019-12-29 13:00:00', 100);
 
-SELECT * FROM dual;
-
 INSERT INTO Return(rid, vid, stamp, value) VALUES (9, 5, SYSTIMESTAMP, 200);
 Insert INTO Return(rid, vid, stamp, value) VALUES (8, 1, SYSTIMESTAMP, 28);
 
