@@ -69,64 +69,6 @@ public class Clerk {
      *                    be "YYYY-MM-DD"
      */
     ResultSet[] generateDailyRentalsReport(Branch br, String currentDate) throws SQLException {
-        String query = generateBaseQueryString(br, currentDate, "Rental");
-
-        ResultSet allVehiclesRentedOutToday = con.createStatement()
-                .executeQuery("SELECT *" +
-                        query + " ORDER BY v.branch, v.vtname;");
-
-        ResultSet numVehiclesPerCategory = con.createStatement()
-                .executeQuery("SELECT v.vtname, COUNT(*)" + query + " GROUP BY v.vtname;");
-
-        ResultSet numRentalsPerBranch = con.createStatement().
-                executeQuery("SELECT v.branch, COUNT(*)" + query + " GROUP BY v.branch;");
-
-        ResultSet totalNumOfVehiclesRentedToday = con.createStatement().
-                executeQuery("SELECT COUNT(*)" + query + ";");
-
-        return new ResultSet[] {allVehiclesRentedOutToday, numVehiclesPerCategory, numRentalsPerBranch, totalNumOfVehiclesRentedToday};
-    }
-
-    /**
-     * Generates daily returns report
-     * @param br The branch specified. If null, will generate report for all branches
-     */
-    ResultSet[] generateDailyReturnsReport(Branch br, String currentDate) throws SQLException {
-        String query = generateBaseQueryString(br, currentDate, "Return");
-
-        ResultSet allVehiclesReturnedToday = con.createStatement()
-                .executeQuery("SELECT *" + query + " ORDER BY v.branch, v.vtname;");
-
-        ResultSet numVehiclesPerCategory = con.createStatement()
-                .executeQuery("SELECT *" + query + " GROUP BY v.vtname;");
-
-        ResultSet revenuePerCategory = con.createStatement()
-                .executeQuery("SELECT SUM(r.value)" + query + " GROUP BY v.vtname;");
-
-        ResultSet subtotalsForVehicleAndRevnuePerBr = con.createStatement()
-                .executeQuery("SELECT COUNT(v.vid), SUM(r.value)" + query + " GROUP BY BRANCH;");
-
-        ResultSet grandTotals = con.createStatement()
-                .executeQuery("SELECT SUM(r.value)" + query + ";");
-
-        return new ResultSet[]{allVehiclesReturnedToday, numVehiclesPerCategory, revenuePerCategory,
-                subtotalsForVehicleAndRevnuePerBr, grandTotals};
-    }
-
-    /**
-     * Returns the base query structure to use for generating daily reports
-     * It aggregates the similar behaviour in the two generate methods
-     *
-     * The format of the base string is as such:
-     *
-     * "FROM Vehicle v WHERE [v.branch = br.location AND] v.vid IN
-     *                                         (SELECT r.vid FROM [reportTable] r WHERE
-     *                                         [r.fromTimestamp's Date] = [todays date or the given date]
-     *
-     * @param reportTable Either \"Rental\" or \"Return\"
-     * @return A query string that filters for all vehicles rented/returned today in the given branch
-     */
-    private String generateBaseQueryString(Branch br, String currentDate, String reportTable) {
         StringBuilder query = new StringBuilder();
 
         String date;
@@ -144,12 +86,125 @@ public class Clerk {
         }
 
         query.append( " v.vid IN")
-                .append(" (SELECT r.vid FROM ")
-                .append(reportTable)
-                .append(" r WHERE TRUNC(CAST(r.fromTimestamp AS DATE)) = TO_DATE('")
+                .append(" (SELECT r.vid FROM Rental r WHERE TRUNC(CAST(r.fromTimestamp AS DATE)) = TO_DATE('")
                 .append(date)
                 .append("','YYYY-MM-DD'))");
 
-       return query.toString();
+
+        ResultSet allVehiclesRentedOutToday = con.createStatement()
+                .executeQuery("SELECT *" + query + " ORDER BY v.branch, v.vtname");
+
+        ResultSet numVehiclesPerCategory = con.createStatement()
+                .executeQuery("SELECT v.vtname, COUNT(*)" + query + " GROUP BY v.vtname");
+
+        ResultSet numRentalsPerBranch = con.createStatement().
+                executeQuery("SELECT v.branch, COUNT(*)" + query + " GROUP BY v.branch");
+
+        ResultSet totalNumOfVehiclesRentedToday = con.createStatement().
+                executeQuery("SELECT COUNT(*)" + query);
+
+        return new ResultSet[] {allVehiclesRentedOutToday, numVehiclesPerCategory, numRentalsPerBranch, totalNumOfVehiclesRentedToday};
+    }
+
+    /**
+     * Generates daily returns report
+     * @param br The branch specified. If null, will generate report for all branches
+     */
+    ResultSet[] generateDailyReturnsReport(Branch br, String currentDate) throws SQLException {
+        String date;
+        if (currentDate == null) {
+            date = new Date(System.currentTimeMillis()).toString();
+        } else {
+            date = currentDate;
+        }
+
+        ResultSet allVehiclesReturnedToday = con.createStatement()
+                .executeQuery(getallVehiclesReturnedTodayQS(br, date));
+
+        ResultSet numVehiclesPerCategory = con.createStatement()
+                .executeQuery(numVehiclesPerCategory(br, date));
+
+        ResultSet revenuePerCategory = con.createStatement()
+                .executeQuery(revenuePerCategory(br, date));
+
+        ResultSet subtotalsForVehicleAndRevenuePerBr = con.createStatement()
+                .executeQuery(subtotalsForVehicleAndRevenuePerBr(br, date));
+
+        ResultSet grandTotals = con.createStatement()
+                .executeQuery(grandTotals(br, date));
+
+        return new ResultSet[]{allVehiclesReturnedToday, numVehiclesPerCategory, revenuePerCategory,
+                subtotalsForVehicleAndRevenuePerBr, grandTotals};
+    }
+
+    private String getallVehiclesReturnedTodayQS(Branch br, String date) {
+        String toRet = "SELECT * FROM Vehicle v WHERE ";
+
+        if (br != null) {
+            toRet += " v.branch = " + br.getLoc() + " AND";
+        }
+
+        toRet += "v.vid IN (SELECT r.vid FROM Return r WHERE TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+                date
+                + "','YYYY-MM-DD'))  ORDER BY v.branch, v.vtname";
+
+        return toRet;
+    }
+
+    private String numVehiclesPerCategory(Branch br, String date) {
+        String toRet = "SELECT COUNT(*) FROM Vehicle v WHERE ";
+
+        if (br != null) {
+            toRet += " v.branch = " + br.getLoc() + " AND";
+        }
+
+        toRet += "v.vid IN (SELECT r.vid FROM Return r WHERE TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+                date +
+                "','YYYY-MM-DD')) GROUP BY v.vtname";
+
+        return toRet;
+    }
+
+    private String revenuePerCategory(Branch br, String date) {
+        String toRet = "SELECT v.vtname, SUM(r.value) FROM Return r, Vehicle v WHERE";
+
+        if (br != null) {
+            toRet += " v.branch = " + br.getLoc() + " AND";
+        }
+
+
+        toRet += " v.vid = r.vid AND TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+        date +
+        "','YYYY-MM-DD') GROUP BY v.vtname";
+
+        return toRet;
+    }
+
+    private String subtotalsForVehicleAndRevenuePerBr(Branch br, String date) {
+        String toRet = "SELECT COUNT(v.vid), SUM(r.value) FROM Return r, Vehicle v WHERE";
+
+        if (br != null) {
+            toRet += " v.branch = " + br.getLoc() + " AND";
+        }
+
+        toRet += " v.vid = r.vid AND TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+                date +
+                "','YYYY-MM-DD') GROUP BY v.branch";
+
+        return toRet;
+    }
+
+    private String grandTotals(Branch br, String date) {
+        String toRet = "SELECT SUM(r.value) FROM Return r, Vehicle v WHERE";
+
+        if (br != null) {
+            toRet += " v.branch = " + br.getLoc() + " AND";
+        }
+
+        toRet += " v.vid = r.vid AND TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+                date +
+                "','YYYY-MM-DD') GROUP BY v.branch";
+
+        return toRet;
     }
 }
