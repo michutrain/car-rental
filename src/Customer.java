@@ -14,6 +14,7 @@ public class Customer {
     private PreparedStatement getCustomerByPhoneNum;
     private PreparedStatement getAvailableVehiclesCount;
     private PreparedStatement getCustomerInformation;
+    private PreparedStatement getVehicleStatus;
 
     private MainMenu mainMenu;
 
@@ -47,9 +48,11 @@ public class Customer {
     private final String getAvailableVehiclesCountQuery =
             "SELECT * FROM Vehicle";
 
+    private final String getVehicleStatusQuery =
+            "SELECT STATUS FROM Vehicle WHERE vid = ?";
 
-    private final String getCustomerInformationQuery =
-            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
+//    private final String getCustomerInformationQuery =
+//            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
 
     public Customer(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
@@ -71,8 +74,8 @@ public class Customer {
 
             getAvailableVehiclesCount = this.mainMenu.con.prepareStatement(getAvailableVehiclesCountQuery);
 
-            getCustomerInformation = this.mainMenu.con.prepareStatement(getCustomerInformationQuery);
-
+//            getCustomerInformation = this.mainMenu.con.prepareStatement(getCustomerInformationQuery);
+            getVehicleStatus = this.mainMenu.con.prepareStatement(getVehicleStatusQuery);
         } catch (SQLException ex) {
             System.out.println("Message: " + ex.getMessage());
         }
@@ -144,9 +147,17 @@ public class Customer {
         return 0; //incase no exist
     }
 
+    public boolean isCurrentlyRented(Long vid) throws SQLException{
+        getVehicleStatus.setLong(1, vid);
+        ResultSet result = getVehicleStatus.executeQuery();
+        result.next();
+        return result.getLong("status") == 1;
+    }
+
     public boolean validCustomer(String phoneNum) throws SQLException {
         getCustomerByPhoneNum.setString(1, phoneNum);
         ResultSet results = getCustomerByPhoneNum.executeQuery();
+        results.next();
         return results.getInt("total") > 0;
     }
 

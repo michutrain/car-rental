@@ -7,6 +7,10 @@ public class Clerk {
 
     private PreparedStatement rentVehicle;
     private PreparedStatement returnVehicle;
+    private PreparedStatement getRentalId;
+    private PreparedStatement getRentalTime;
+    private PreparedStatement getRentalStartOdometer;
+    private PreparedStatement getRentalType;
 
     private PreparedStatement rentalsReport;
     private PreparedStatement returnReport;
@@ -21,6 +25,18 @@ public class Clerk {
             "(rid, vid, stamp, VALUE)" +
              "VALUES (?, ?, ?, ?)";
 
+    private final String getRentalIdQuery =
+            "SELECT rid FROM Rental WHERE vid = ?";
+
+    private final String getRentalTimeQuery =
+            "SELECT fromtimestamp FROM Rental WHERE vid = ?";
+
+    private final String getRentalTypeQuery =
+            "SELECT vtname FROM Vehicle WHERE vid = ?";
+
+    private final String getRentalStartOdometerQuery =
+            "SELECT odometer FROM Rental WHERE vid = ?";
+
     private final String rentalsReportQuery =
             " FROM Vehicle v" +
             " WHERE [v.location = givenBranch AND] v.vid in " +
@@ -33,6 +49,9 @@ public class Clerk {
         try {
             rentVehicle = con.prepareStatement(rentVehicleQuery);
             returnVehicle = con.prepareStatement(returnVehicleQuery);
+            getRentalId = con.prepareStatement(getRentalIdQuery);
+            getRentalTime = con.prepareStatement(getRentalTimeQuery);
+            getRentalType = con.prepareStatement(getRentalTypeQuery);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,14 +69,36 @@ public class Clerk {
         rentVehicle.executeUpdate();
     }
 
-    void returnVehicle(long rid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
-        returnVehicle.setLong(0, rid);
-        returnVehicle.setTimestamp(1, stamp);
-        returnVehicle.setLong(2, fullTank);
-        returnVehicle.setLong(3, odometer);
+    void returnVehicle(long rid, long vid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
+        returnVehicle.setLong(1, rid);
+        returnVehicle.setLong(2, vid);
+        returnVehicle.setTimestamp(3, stamp);
         returnVehicle.setLong(4, value);
 
         returnVehicle.executeUpdate();
+    }
+    Long getRentalId(Long vid) throws SQLException{
+        getRentalId.setLong(1, vid);
+        ResultSet result = getRentalId.executeQuery();
+        return result.getLong("rid");
+    }
+
+    String getRentalType(Long vid) throws SQLException{
+        getRentalType.setLong(1, vid);
+        ResultSet result = getRentalType.executeQuery();
+        return result.getString("vtname");
+    }
+
+    Timestamp getRentalTime(Long vid) throws SQLException{
+        getRentalTime.setLong(1, vid);
+        ResultSet result = getRentalTime.executeQuery();
+        return result.getTimestamp("fromtimestamp");
+    }
+
+    Long getRentalOdometer(Long vid) throws SQLException{
+        getRentalStartOdometer.setLong(1, vid);
+        ResultSet result = getRentalStartOdometer.executeQuery();
+        return result.getLong("odometer");
     }
 
     /**

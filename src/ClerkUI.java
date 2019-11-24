@@ -1,11 +1,14 @@
 import Util.Branch;
 import Util.TimeInterval;
 import Util.IDGen;
+import Util.VehicleType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
+
+import static Util.VehicleType.getVehicleType;
 
 public class ClerkUI {
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -225,29 +228,54 @@ public class ClerkUI {
         }
     }
 
-    public void returnVehicle() {
+    public void returnVehicle() throws SQLException {
         try {
+            Long vid = 0L;
             System.out.print("Enter Vehicle ID to return: \n");
-            String bid = in.readLine();
-            if (bid.isEmpty()) {
-                System.out.println("No Vehicle selected");
+            vid = Long.parseLong(in.readLine());
+            while  (vid == 0L) {
+                System.out.println("No Vehicle selected Please Try Again\n");
+                System.out.print("Enter Vehicle ID to return: \n");
+                vid = Long.parseLong(in.readLine());
+            }
+            Customer c = new Customer(mainMenu);
+            boolean isRented = c.isCurrentlyRented(vid);
+
+            if(!isRented) {
+                System.out.print("Vehicle entered is currently not rented. Exiting to clerk menu\n");
+                clerkMenu();
             } else {
-                // TODO: If vehicle hasn't been selected, Log an error
-                // TODO: If vehicle was rented, update the database to return it
+                Long rid = clerk.getRentalId(vid);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                Long fullTank = 0L;
+                System.out.print("Enter Vehicle Tank Level: \n");
+                fullTank = Long.parseLong(in.readLine());
+
+                if(fullTank == 0L){
+                    System.out.print("Invalid Tank Level - setting tank level to 0 \n");
+                }
+
+                Long odometer = 0L;
+                System.out.print("Enter Vehicle Odometer: \n");
+                odometer = Long.parseLong(in.readLine());
+                if(odometer == 0L) {
+                    System.out.print("Invalid odometer - setting odometer to 0 \n");
+                }
+                Timestamp rentalTime = clerk.getRentalTime(vid);
+                Long startOdometer = clerk.getRentalOdometer(vid);
+                String vtname = clerk.getRentalType(vid);
+
+                VehicleType v = getVehicleType(vtname);
+                double amount = v.getTotalCost(rentalTime, timestamp, startOdometer, odometer) ;
+
+                clerk.returnVehicle(rid, vid, timestamp, fullTank, odometer, (long)amount);
+                System.out.print("Total Amount Owing: " + amount + "\n");
+
             }
         } catch (IOException e) {
             e.getMessage();
             e.printStackTrace();
-
-/*                try
-                {
-                    MainMenu.con.close();
-                    System.exit(-1);
-                }
-                catch (SQLException ex)
-                {
-                    System.out.println("Message: " + ex.getMessage());
-                }*/
         }
     }
 
