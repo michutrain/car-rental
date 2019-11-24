@@ -4,12 +4,12 @@ public class IDGen {
     private static int confNum;
     private static int rid;
 
-    static int getNextConfNum() {
+    public static int getNextConfNum() {
         confNum++;
         return confNum;
     }
 
-    static int getNextRID() {
+    public static int getNextRID() {
         rid++;
         return rid;
     }

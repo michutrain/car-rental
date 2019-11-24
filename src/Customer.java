@@ -12,6 +12,7 @@ public class Customer {
     private PreparedStatement getVehicleStatement;
     private PreparedStatement getCustomerByPhoneNum;
     private PreparedStatement getAvailableVehiclesCount;
+    private PreparedStatement getCustomerInformation;
 
     private MainMenu mainMenu;
 
@@ -47,6 +48,9 @@ public class Customer {
     private final String getAvailableVehiclesDetailsQuery =
         "SELECT * FROM Vehicle";
 
+    private final String getCustomerInformationQuery =
+            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
+
     public Customer(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
         
@@ -66,6 +70,8 @@ public class Customer {
             getAvailableVehiclesDetails = this.mainMenu.con.prepareStatement(availableVehiclesDetailsQuery);
 
             getAvailableVehiclesCount = this.mainMenu.con.prepareStatement(getAvailableVehiclesCountQuery);
+
+            getCustomerInformation = this.mainMenu.con.prepareStatement(getCustomerInformationQuery);
         } catch (SQLException ex) {
             System.out.println("Message: " + ex.getMessage());
         }
@@ -95,6 +101,12 @@ public class Customer {
         addCustomer.setString(4, address);
 
         addVehicle.executeUpdate();
+    }
+
+    public ResultSet getCustomerInformation(String name, long phoneNum) throws SQLException {
+        getCustomerInformation.setString(1, name == null ? "*" : name);
+        getCustomerInformation.setString(2, phoneNum == 0 ? "*" : Long.toString(phoneNum));
+        return getAvailableVehiclesDetails.executeQuery();
     }
 
     private void setVehicleStatus(long vid, int status) throws SQLException { // 0: available, 1: rented, 2: maintainence
@@ -159,6 +171,12 @@ public class Customer {
 
         ResultSet results = stmt.executeQuery(sqlStatement);
         return results.getInt("total");
+    }
+
+    public ResultSet getAvailableVehicles(String carType, String location) throws SQLException {
+        getAvailableVehiclesDetails.setString(1, carType == null ? "*" : carType);
+        getAvailableVehiclesDetails.setString(2, location == null ? "*" : location);
+        return getAvailableVehiclesDetails.executeQuery();
     }
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
