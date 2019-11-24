@@ -51,6 +51,9 @@ public class Customer {
     private final String getCustomerInformationQuery =
             "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
 
+    private final String getCustomerInformationQuery =
+            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
+
     public Customer(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
         
