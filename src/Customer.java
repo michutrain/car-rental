@@ -1,11 +1,6 @@
 import Util.TimeInterval;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class Customer {
 
@@ -42,12 +37,14 @@ public class Customer {
         "UPDATE Vehicle SET status = ? WHERE vid = ?";
 
     private final String getCustomerByPhoneNumQuery =
-        "SELECT count(*) FROM Customer WHERE phoneNum = ?";
+        "SELECT COUNT(*) FROM Customer WHERE phoneNum = ?";
 
     private final String availableVehiclesDetailsQuery = 
         "SELECT * FROM VEHICLE WHERE vtname = ? and location = ?";
 
     private final String getAvailableVehiclesCountQuery =
+        "SELECT * FROM Vehicle";
+    private final String getAvailableVehiclesDetailsQuery =
         "SELECT * FROM Vehicle";
 
     public Customer(MainMenu mainMenu) {
@@ -108,10 +105,6 @@ public class Customer {
 
         
     public int makeReservation(String vtname, String dlincense, TimeInterval interval) throws SQLException{
-        // TODO: Make a reservation for the parameters
-        // TODO: Set the vehicle Status to reserved
-        // TODO: return the confirmation number (reservation CONFNO)
-        
         getAvailableVehicle.setString(1, vtname);
         ResultSet result = getAvailableVehicle.executeQuery();
         if (result.next()) {
@@ -143,11 +136,11 @@ public class Customer {
             sqlStatement += " WHERE vtname = " + carType;
 
             if (location != null) {
-                sqlStatement += " AND location = " + location;
+            sqlStatement += " AND location = " + location;
             }
 
             if (interval != null) {
-                // TODO
+             sqlStatement += " AND status = 0 ";
             }
         }
 
@@ -155,39 +148,12 @@ public class Customer {
             sqlStatement += "WHERE location = " + location;
 
             if (interval != null) {
-                // TODO
+            sqlStatement += " AND status = 0 ";
             }
         }
         else if (interval != null) {
-            // TODO
+            sqlStatement += " AND status = 0 ";
         }
-
-//        boolean isFirstAttributeToFilr = true;
-//        if (carType != null)
-//            sqlStatement += "WHERE
-//            isFirstAttributeToFilter false;
-
-//            sqlStatement += " vtname " + carType;
-//
-
-//        if (location != null)
-//            if (!isFirstAttributeToFier) {
-//                sqlStatement += " AND";
-//            } else {
-//                sqlStatement += " WHERE";
-//                isFirstAttributeToFilter = false;
-//            }
-//
-//            sqlStatement += " location = " + location;
-//        }
-//
-//        if (timestamp != null) {
-//            if (!isFirstAttributeToFilter) {
-//                sqlStatement += " AND";
-//            } else {
-//                sqlStatement += "WHERE ";
-//            }
-//        }
 
         sqlStatement += " ORDER BY location, vtname";
 
@@ -196,13 +162,23 @@ public class Customer {
     }
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
-        ResultSet rs;
+        Statement stmt = mainMenu.con.createStatement();
+        String sqlStatement = getAvailableVehiclesDetailsQuery;
 
-        // TODO: This needs to work if any/all of the above params are empty
-        // TODO: If all params are empty, returns all available vehicles at that branch
-        getAvailableVehiclesDetails.setString(1, carType == null ? "*" : carType);
-        getAvailableVehiclesDetails.setString(2, location == null ? "*" : location);
-        rs = getAvailableVehiclesDetails.executeQuery();
+        if (carType != null) {
+            sqlStatement += " WHERE vtname = " + carType;
+
+            if (location != null) {
+                sqlStatement += " AND location = " + location;
+            }
+
+        } else if (location != null) {
+            sqlStatement += "WHERE location = " + location;
+        }
+
+        sqlStatement += " ORDER BY location, vtname";
+
+        ResultSet rs = stmt.executeQuery(sqlStatement);
 
         // get info on ResultSet
         ResultSetMetaData rsmd = rs.getMetaData();
@@ -217,6 +193,7 @@ public class Customer {
             // get column name and print it
             System.out.printf("%-15s", rsmd.getColumnName(i + 1));
         }
+
         int count = 0;
         while (rs.next() && count < 15) {
             String make = rs.getString("MAKE");
