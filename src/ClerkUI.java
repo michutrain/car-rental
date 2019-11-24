@@ -1,4 +1,6 @@
 import Util.Branch;
+import Util.TimeInterval;
+import Util.IDGen;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -148,67 +150,111 @@ public class ClerkUI {
         }
     }
 
-    public void rentVehicle() {
-        try {
-            System.out.print("Location: \n");
-            String loc = in.readLine();
+    public void rentVehicle() throws IOException, SQLException {
+//        String carType = "Compact"; // TODO: THESE NEED TO START AS NULL - THEY ONLY HAVE VALUES FOR TESTING PURPOSES
+//        String location = "YVR - Vancouver";
+//        String puDay = "1998-12-18";
+//        String puTime = "12:00:00";
+//        String rDay = "1998-12-19";
+//        String rTime = "12:00:00";
 
-            System.out.print("Vehicle Type: \n");
-            String vType = in.readLine();
-
-            System.out.print("Pickup Day: \n");
-            String puDay = in.readLine();
-
-            System.out.print("Pickup Time: \n");
-            String puTime = in.readLine();
-
-            System.out.print("Return Day: \n");
-            String rDay = in.readLine();
-
-            System.out.print("Return Time: \n");
-            String rTime = in.readLine();
-
-            if (loc.isEmpty() || vType.isEmpty() || puDay.isEmpty() || puTime.isEmpty() || rDay.isEmpty() || rTime.isEmpty()) {
-                System.out.print("Invalid Parameters\n");
-                return;
-            }
-            boolean available = false;
-            // TODO: check if vehicle is available (SQL)
-            if (available) {
-                boolean confirmed = false;
-                String pNum = "";
-                String name = "";
-                while (!confirmed) {
-
-                    if (pNum.isEmpty()) {
-                        System.out.print("Please provide a valid Phone Number:\n");
-                        pNum = in.readLine();
-                    } else if (name.isEmpty()) {
-                        System.out.print("Please Provide a Valid Name\n");
-                        name = in.readLine();
-                    } else {
-                        // TODO: Check if customer is part of database
-                        // Customer is part of Database: change vehicle status to rented
-                        // Customer is not part of Database: Ask for Necessary information to add to database and add them
-                        confirmed = true;
-                    }
-                }
-            } else {
-                System.out.print("No Available Vehicles\n");
-            }
-        } catch (IOException e) {
-            System.out.println("IOException!");
-
-/*                try
-                {
-                    MainMenu.con.close();
-                    System.exit(-1);
-                }
-                catch (SQLException ex)
-                {
-                    System.out.println("Message: " + ex.getMessage());
-                }*/
+        String carType = "";
+        String location = "";
+        String puDay = "";
+        String puTime = "";
+        String rDay = "";
+        String rTime = "";
+        while(location.isEmpty()){
+            System.out.print("\nLocation: ");
+            location = in.readLine();
         }
+
+        while(carType.isEmpty()){
+            System.out.print("\nCar Type: ");
+            carType = in.readLine();
+        }
+        while(puDay.isEmpty()){
+            System.out.print("Pickup Day (YYYY-MM-DD): \n");
+            puDay = in.readLine();
+        }
+
+        while(puTime.isEmpty()){
+            System.out.print("Pickup Time (HH:MM:SS): \n");
+            puTime = in.readLine();
+        }
+
+        while(rDay.isEmpty()){
+            System.out.print("Return Day (YYYY-MM-DD): \n");
+            rDay = in.readLine();
+        }
+        while(rTime.isEmpty()){
+            System.out.print("Return Time (HH:MM:SS): \n");
+            rTime = in.readLine();
+        }
+
+        Timestamp pickUpTime = Timestamp.valueOf(puDay + " " + puTime);
+        Timestamp dropTime = Timestamp.valueOf(rDay + " " + rTime);
+        TimeInterval timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
+        Customer c = new Customer(mainMenu);
+
+        int available = c.getAvailableVehiclesCount(carType, location, timeInterval);
+
+        if (available > 0) {
+
+            boolean confirmed = false;
+            Long pNum = 0L;
+            String name = "";
+            while (!confirmed) {
+                String dlicense = "";
+                if (pNum == 0L) {
+                    System.out.print("Please provide a valid Phone Number:\n");
+                    pNum = Long.getLong(in.readLine());
+                } else if (name.isEmpty()) {
+                    System.out.print("Please Provide a Valid Name\n");
+                    name = in.readLine();
+                } else {
+                    boolean isValid = c.validCustomer(pNum.toString());
+                    if (!isValid) {
+                        System.out.print("No Existing Customer Found - Please Register:\n");
+
+                        System.out.print("Driver's License:\n");
+                        dlicense = in.readLine();
+
+                        System.out.print("Address:\n");
+                        String address = in.readLine();
+
+                        c.addCustomer(dlicense, name, pNum, address);
+
+                        System.out.print("Confirmed " + name + " added to Database\n");
+                    }
+
+                    ResultSet rs = c.getAvailableVehicles(carType, location);
+                    rs.next();
+                    long vid = rs.getLong("VID");
+                    long odometer = rs.getLong("ODOMETER");
+                    int rid = IDGen.getNextRID();
+
+                    while(dlicense.isEmpty()) {
+                        System.out.print("Driver's License:\n");
+                        dlicense = in.readLine();
+                    }
+
+                    int confNum = IDGen.getNextConfNum();
+
+                    clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
+
+                    System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
+                            "Pickup: " + puDay + " " + puTime + "\n" +
+                            "Return: " + rDay + " " + rTime + "\n" +
+                            "Confirmation Number: " + confNum + "\n");
+                    confirmed = true;
+                }
+            }
+        } else {
+            System.out.print("No Available Vehicles\n");
+        }
+
+
     }
 
     public void clerkMenu() throws SQLException{
