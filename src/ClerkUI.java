@@ -133,9 +133,9 @@ public class ClerkUI {
         System.out.println();
         System.out.println("Vehicle category     |   Number");
 
-        while (allVehiclesReturnedToday.next()) {
-            System.out.println(allVehiclesReturnedToday.getString(1) + "       " +
-                    allVehiclesReturnedToday.getLong(2));
+        while (numVehiclesPerCategory.next()) {
+            System.out.println(numVehiclesPerCategory.getString(1) + "       " +
+                    numVehiclesPerCategory.getLong(2));
         }
 
         ResultSet revenuePerCategory = report[2];
@@ -145,9 +145,9 @@ public class ClerkUI {
         System.out.println();
         System.out.println("Vehicle category     |   Revenue earned");
 
-        while (allVehiclesReturnedToday.next()) {
-            System.out.println(allVehiclesReturnedToday.getString(1) + "       " +
-                    allVehiclesReturnedToday.getLong(2));
+        while (revenuePerCategory.next()) {
+            System.out.println(revenuePerCategory.getString(1) + "       " +
+                    revenuePerCategory.getLong(2));
         }
 
         ResultSet subtotalsForVehicleAndRevenuePerBr = report[3];
@@ -178,16 +178,13 @@ public class ClerkUI {
     }
 
     private void reportsMenu() {
-        int choice = 0;
-        boolean quit = false;
         try {
-
-            while (!quit) {
+            while (true) {
                 System.out.print("\nReport Menu: \n");
                 System.out.print("1:  Daily Rentals Report\n");
                 System.out.print("2:  Daily Returns Report\n");
                 System.out.print("5:  Back to Clerk Menu\n");
-                choice = Integer.parseInt(in.readLine());
+                int choice = Integer.parseInt(in.readLine());
 
                 if (choice == 1) {
                     System.out.print("\nBranch location-city (optional): \n");
@@ -202,7 +199,7 @@ public class ClerkUI {
                     String date = in.readLine();
                     dailyReturnReport(bid, date);
                 } else if (choice == 5) {
-                    quit = true;
+                    break;
                 } else {
                     System.out.print("Invalid Choice - Please select again \n");
                 }
@@ -216,52 +213,23 @@ public class ClerkUI {
             e.getMessage();
             e.printStackTrace();
             System.exit(-1);
-
-/*
-                try {
-                    MainMenu.con.close();
-                    System.exit(-1);
-                } catch (SQLException ex) {
-                    System.out.println("Message: " + ex.getMessage());
-                }
-*/
         }
     }
 
-    public void returnVehicle() throws SQLException {
+    private void returnVehicle() throws SQLException {
         try {
-            Long vid = 0L;
             System.out.print("Enter Vehicle ID to return: \n");
-            vid = Long.parseLong(in.readLine());
-            while  (vid == 0L) {
-                System.out.println("No Vehicle selected Please Try Again\n");
-                System.out.print("Enter Vehicle ID to return: \n");
-                vid = Long.parseLong(in.readLine());
-            }
+            long vid = Long.parseLong(in.readLine());
             Customer c = new Customer(mainMenu);
-            boolean isRented = c.isCurrentlyRented(vid);
 
-            if(!isRented) {
+            if(!c.isCurrentlyRented(vid)) {
                 System.out.print("Vehicle entered is currently not rented. Exiting to clerk menu\n");
-                clerkMenu();
             } else {
                 Long rid = clerk.getRentalId(vid);
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-                Long fullTank = 0L;
-                System.out.print("Enter Vehicle Tank Level: \n");
-                fullTank = Long.parseLong(in.readLine());
-
-                if(fullTank == 0L){
-                    System.out.print("Invalid Tank Level - setting tank level to 0 \n");
-                }
-
-                Long odometer = 0L;
                 System.out.print("Enter Vehicle Odometer: \n");
-                odometer = Long.parseLong(in.readLine());
-                if(odometer == 0L) {
-                    System.out.print("Invalid odometer - setting odometer to 0 \n");
-                }
+                long odometer = Long.parseLong(in.readLine());
                 Timestamp rentalTime = clerk.getRentalTime(vid);
                 Long startOdometer = clerk.getRentalOdometer(vid);
                 String vtname = clerk.getRentalType(vid);
@@ -269,7 +237,7 @@ public class ClerkUI {
                 VehicleType v = getVehicleType(vtname);
                 double amount = v.getTotalCost(rentalTime, timestamp, startOdometer, odometer) ;
 
-                clerk.returnVehicle(rid, vid, timestamp, fullTank, odometer, (long)amount);
+                clerk.returnVehicle(rid, vid, timestamp, amount);
                 System.out.print("Total Amount Owing: " + amount + "\n");
 
             }
@@ -279,7 +247,7 @@ public class ClerkUI {
         }
     }
 
-    public void rentVehicle() throws IOException, SQLException {
+    private void rentVehicle() throws IOException, SQLException {
 //        String carType = "Compact"; // TODO: THESE NEED TO START AS NULL - THEY ONLY HAVE VALUES FOR TESTING PURPOSES
 //        String location = "YVR - Vancouver";
 //        String puDay = "1998-12-18";
@@ -287,21 +255,25 @@ public class ClerkUI {
 //        String rDay = "1998-12-19";
 //        String rTime = "12:00:00";
 
-        String carType = "";
-        String location = "";
         String puDay = "";
         String puTime = "";
         String rDay = "";
         String rTime = "";
-        while(location.isEmpty()){
-            System.out.print("\nLocation: ");
-            location = in.readLine();
+
+        System.out.println("Vehicle ID: ");
+        long vid = Long.parseLong(in.readLine());
+
+        ResultSet vehicleInfo = clerk.getVehicleDetails(vid);
+        vehicleInfo.next();
+        if (vehicleInfo.getInt("status") != 0) {
+            System.out.println("Vehicle given is not available");
+            return;
         }
 
-        while(carType.isEmpty()){
-            System.out.print("\nCar Type: ");
-            carType = in.readLine();
-        }
+        long odometer = vehicleInfo.getLong("odometer");
+        String br = vehicleInfo.getString("branch");
+        String carType = vehicleInfo.getString("vtname");
+
         while(puDay.isEmpty()){
             System.out.print("Pickup Day (YYYY-MM-DD): \n");
             puDay = in.readLine();
@@ -323,126 +295,80 @@ public class ClerkUI {
 
         Timestamp pickUpTime = Timestamp.valueOf(puDay + " " + puTime);
         Timestamp dropTime = Timestamp.valueOf(rDay + " " + rTime);
-        TimeInterval timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
         Customer c = new Customer(mainMenu);
 
-        int available = c.getAvailableVehiclesCount(carType, location, timeInterval);
+        System.out.print("Driver's License: \n");
+        String dlicense = in.readLine();
 
-        if (available > 0) {
+        boolean isValid = c.validCustomer(dlicense);
+        if (!isValid) {
+            System.out.print("No Existing Customer Found - Please Register:\n");
 
-            boolean confirmed = false;
-            Long pNum = 0L;
-            String name = "";
-            while (!confirmed) {
-                String dlicense = "";
-                if (pNum == 0L) {
-                    System.out.print("Please provide a valid Phone Number:\n");
-                    pNum = Long.getLong(in.readLine());
-                } else if (name.isEmpty()) {
-                    System.out.print("Please Provide a Valid Name\n");
-                    name = in.readLine();
-                } else {
-                    boolean isValid = c.validCustomer(pNum.toString());
-                    if (!isValid) {
-                        System.out.print("No Existing Customer Found - Please Register:\n");
+            System.out.println("Name: ");
+            String name = in.readLine();
 
-                        System.out.print("Driver's License:\n");
-                        dlicense = in.readLine();
+            System.out.println("Phone number: ");
+            String pnum = in.readLine();
 
-                        System.out.print("Address:\n");
-                        String address = in.readLine();
+            System.out.print("Address:\n");
+            String address = in.readLine();
 
-                        c.addCustomer(dlicense, name, pNum, address);
+            c.addCustomer(dlicense, name, pnum, address);
 
-                        System.out.print("Confirmed " + name + " added to Database\n");
-                    }
-
-                    ResultSet rs = c.getAvailableVehicles(carType, location);
-                    rs.next();
-                    long vid = rs.getLong("VID");
-                    long odometer = rs.getLong("ODOMETER");
-                    int rid = IDGen.getNextRID();
-
-                    while(dlicense.isEmpty()) {
-                        System.out.print("Driver's License:\n");
-                        dlicense = in.readLine();
-                    }
-
-                    int confNum = IDGen.getNextConfNum();
-
-                    clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
-
-                    System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
-                            "Pickup: " + puDay + " " + puTime + "\n" +
-                            "Return: " + rDay + " " + rTime + "\n" +
-                            "Confirmation Number: " + confNum + "\n");
-                    confirmed = true;
-                }
-            }
-        } else {
-            System.out.print("No Available Vehicles\n");
+            System.out.print("Confirmed " + name + " added to Database\n");
         }
 
+        int rid = IDGen.getNextRID();
 
+        while(dlicense.isEmpty()) {
+            System.out.print("Driver's License:\n");
+            dlicense = in.readLine();
+        }
+
+        int confNum = IDGen.getNextConfNum();
+
+        clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
+
+        System.out.print("Rental made for a " + carType + " from " + br + " confirmed\n" +
+                "Pickup: " + puDay + " " + puTime + "\n" +
+                "Return: " + rDay + " " + rTime + "\n" +
+                "Confirmation Number: " + confNum + "\n");
     }
 
     public void clerkMenu() throws SQLException{
-        int firstChoice = 0;
-        boolean quit;
-        quit = false;
-
+        boolean quit = false;
         try {
-/*
-                // disable auto commit mode
-                MainMenu.con.setAutoCommit(false);
-*/
-
             while (!quit) {
-                if (firstChoice == 0) {
-                    System.out.print("\nClerk Menu: \n");
-                    System.out.print("1:  Rent a Vehicle\n");
-                    System.out.print("2:  Return a Vehicle\n");
-                    System.out.print("3:  Reports\n");
-                    System.out.print("5:  Back to Main Menu\n");
-                    firstChoice = Integer.parseInt(in.readLine());
-                }
-                if (firstChoice == 1) {
-                    rentVehicle();
-                    firstChoice = 0;
-                } else if (firstChoice == 2) {
-                    returnVehicle();
-                    firstChoice = 0;
-                } else if (firstChoice == 3) {
-                    reportsMenu();
-                    firstChoice = 0;
-                } else if (firstChoice == 5) {
-                    quit = true;
-                } else {
-                    System.out.println("Invalid Choice - Please select again");
-                    firstChoice = 0;
-                }
+                System.out.print("\nClerk Menu: \n");
+                System.out.print("1:  Rent a Vehicle\n");
+                System.out.print("2:  Return a Vehicle\n");
+                System.out.print("3:  Reports\n");
+                System.out.print("5:  Back to Main Menu\n");
+                int choice = Integer.parseInt(in.readLine());
 
-                System.out.println(" ");
+                switch (choice) {
+                    case 1:
+                        rentVehicle();
+                        break;
+                    case 2:
+                        returnVehicle();
+                        break;
+                    case 3:
+                        reportsMenu();
+                        break;
+                    case 5:
+                        quit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid Choice - Please select again");
+                }
             }
 
             System.out.println("Returning to Home Screen\n");
             mainMenu.showMenu();
-        }
-//        catch (SQLException ex) {
-//            System.out.println("Message: " + ex.getMessage());
-//        }
-        catch (IOException e) {
-            System.out.println("IOException!");
-
-/*                try
-                {
-                    MainMenu.con.close();
-                    System.exit(-1);
-                }
-                catch (SQLException ex)
-                {
-                    System.out.println("Message: " + ex.getMessage());
-                }*/
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

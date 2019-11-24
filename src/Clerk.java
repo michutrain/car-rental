@@ -12,9 +12,6 @@ public class Clerk {
     private PreparedStatement getRentalStartOdometer;
     private PreparedStatement getRentalType;
 
-    private PreparedStatement rentalsReport;
-    private PreparedStatement returnReport;
-
     private final String rentVehicleQuery =
             "INSERT INTO Rental" +
             "(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer)" +
@@ -37,13 +34,6 @@ public class Clerk {
     private final String getRentalStartOdometerQuery =
             "SELECT odometer FROM Rental WHERE vid = ?";
 
-    private final String rentalsReportQuery =
-            " FROM Vehicle v" +
-            " WHERE [v.location = givenBranch AND] v.vid in " +
-            "(SELECT r.vid FROM Rental r " +
-                    "WHERE DATE(r.fromTimestamp) = ?)";
-
-
     public Clerk(Connection con) {
         this.con = con;
         try {
@@ -52,6 +42,7 @@ public class Clerk {
             getRentalId = con.prepareStatement(getRentalIdQuery);
             getRentalTime = con.prepareStatement(getRentalTimeQuery);
             getRentalType = con.prepareStatement(getRentalTypeQuery);
+            getRentalStartOdometer = con.prepareStatement(getRentalStartOdometerQuery);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,15 +58,19 @@ public class Clerk {
         rentVehicle.setLong(6, odometer);
 
         rentVehicle.executeUpdate();
+
+        con.createStatement().executeUpdate("UPDATE VEHICLE SET STATUS = 1 WHERE VID = " + vid);    // Set status of vehicle to rented
     }
 
-    void returnVehicle(long rid, long vid, Timestamp stamp, long fullTank, long odometer, long value) throws SQLException {
+    void returnVehicle(long rid, long vid, Timestamp stamp, double value) throws SQLException {
         returnVehicle.setLong(1, rid);
         returnVehicle.setLong(2, vid);
         returnVehicle.setTimestamp(3, stamp);
-        returnVehicle.setLong(4, value);
+        returnVehicle.setDouble(4, value);
 
         returnVehicle.executeUpdate();
+
+        con.createStatement().executeUpdate("UPDATE VEHICLE SET STATUS = 0 WHERE VID = " + vid);    // Set status of vehicle to available to rent
     }
     Long getRentalId(Long vid) throws SQLException{
         getRentalId.setLong(1, vid);
@@ -92,7 +87,7 @@ public class Clerk {
     Timestamp getRentalTime(Long vid) throws SQLException{
         getRentalTime.setLong(1, vid);
         ResultSet result = getRentalTime.executeQuery();
-        return result.getTimestamp("fromtimestamp");
+        return result.getTimestamp("fromTimestamp");
     }
 
     Long getRentalOdometer(Long vid) throws SQLException{
@@ -148,6 +143,8 @@ public class Clerk {
     /**
      * Generates daily returns report
      * @param br The branch specified. If null, will generate report for all branches
+     * @param currentDate The currentDate. If null, get the currentDate. Format of currentDate should
+     *                    be "YYYY-MM-DD"
      */
     ResultSet[] generateDailyReturnsReport(Branch br, String currentDate) throws SQLException {
         String date;
@@ -245,5 +242,9 @@ public class Clerk {
                 "','YYYY-MM-DD')";
 
         return toRet;
+    }
+
+    public ResultSet getVehicleDetails(long targetVid) throws SQLException {
+        return con.createStatement().executeQuery("SELECT * FROM VEHICLE WHERE VID = " + targetVid);
     }
 }

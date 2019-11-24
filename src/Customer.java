@@ -11,7 +11,7 @@ public class Customer {
     private PreparedStatement getAvailableVehicle;
     private PreparedStatement getAvailableVehiclesDetails;
     private PreparedStatement getVehicleStatement;
-    private PreparedStatement getCustomerByPhoneNum;
+    private PreparedStatement getCustomerByDLicense;
     private PreparedStatement getAvailableVehiclesCount;
     private PreparedStatement getCustomerInformation;
     private PreparedStatement getVehicleStatus;
@@ -39,8 +39,8 @@ public class Customer {
     private final String getVehicleQuery =
             "UPDATE Vehicle SET status = ? WHERE vid = ?";
 
-    private final String getCustomerByPhoneNumQuery =
-            "SELECT COUNT(*) FROM Customer WHERE phoneNum = ?";
+    private final String getCustomerByDLicenseQuery =
+            "SELECT COUNT(*) FROM Customer WHERE DLICENSE = ?";
 
     private final String getAvailableVehiclesDetailsQuery =
             "SELECT * FROM VEHICLE WHERE vtname = ? and location = ?";
@@ -68,7 +68,7 @@ public class Customer {
 
             getVehicleStatement = this.mainMenu.con.prepareStatement(getVehicleQuery);
 
-            getCustomerByPhoneNum = this.mainMenu.con.prepareStatement(getCustomerByPhoneNumQuery);
+            getCustomerByDLicense = this.mainMenu.con.prepareStatement(getCustomerByDLicenseQuery);
 
             getAvailableVehiclesDetails = this.mainMenu.con.prepareStatement(getAvailableVehiclesDetailsQuery);
 
@@ -98,10 +98,10 @@ public class Customer {
         addVehicle.executeUpdate();
     }
 
-    public void addCustomer(String dlicense, String name, long phoneNum, String address) throws SQLException {
+    public void addCustomer(String dlicense, String name, String phoneNum, String address) throws SQLException {
         addCustomer.setString(1, dlicense);
         addCustomer.setString(2, name);
-        addCustomer.setLong(3, phoneNum);
+        addCustomer.setString(3, phoneNum);
         addCustomer.setString(4, address);
 
         addVehicle.executeUpdate();
@@ -154,9 +154,9 @@ public class Customer {
         return result.getLong("status") == 1;
     }
 
-    public boolean validCustomer(String phoneNum) throws SQLException {
-        getCustomerByPhoneNum.setString(1, phoneNum);
-        ResultSet results = getCustomerByPhoneNum.executeQuery();
+    public boolean validCustomer(String dlicense) throws SQLException {
+        getCustomerByDLicense.setString(1, dlicense);
+        ResultSet results = getCustomerByDLicense.executeQuery();
         results.next();
         return results.getInt("total") > 0;
     }
