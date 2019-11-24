@@ -34,7 +34,7 @@ public enum VehicleType {
         this.krate = krate;
     }
 
-    public VehicleType getVehicleType(String vtname) throws IllegalArgumentException {
+    public static VehicleType getVehicleType(String vtname) throws IllegalArgumentException {
         return VehicleType.valueOf(vtname);
     }
 
