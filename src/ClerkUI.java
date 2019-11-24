@@ -274,7 +274,6 @@ public class ClerkUI {
                     System.out.print("1:  Rent a Vehicle\n");
                     System.out.print("2:  Return a Vehicle\n");
                     System.out.print("3:  Reports\n");
-                    System.out.print("4:  Cancel a Reservation\n"); // TODO: Needs to be implemented
                     System.out.print("5:  Back to Main Menu\n");
                     firstChoice = Integer.parseInt(in.readLine());
                 }
