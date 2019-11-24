@@ -1,5 +1,9 @@
 package Util;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.concurrent.TimeUnit;
+
 public enum VehicleType {
     Economy("2Door, 2WD", 190, 50, 10, 9, 4, 2, 0.4),
     Compact("2Door, 2WD", 150, 40, 8, 5, 3, 1, 0.2),
@@ -65,4 +69,21 @@ public enum VehicleType {
     public double getKrate() {
         return krate;
     }
+
+    public double getTotalCost(long numOfWeeks, long numOfDays, long numOfHours, long startOdometer, long endOdometer) {
+        return numOfWeeks * wrate + numOfWeeks * wirate +
+                numOfDays * drate + numOfDays * dirate +
+                numOfHours * hrate + numOfHours * hirate +
+                (endOdometer - startOdometer) * krate;
+    }
+
+    public double getTotalCost(Date rentalTime, Date returnTime, long startOdometer, long endOdometer) {
+        long rentalTimeInms = rentalTime.getTime() - returnTime.getTime();
+        long days = TimeUnit.DAYS.convert(rentalTimeInms, TimeUnit.MILLISECONDS);
+        long weeks = days / 7;
+        long hours = TimeUnit.HOURS.convert(rentalTimeInms, TimeUnit.MILLISECONDS);
+
+        return getTotalCost(weeks, days, hours, startOdometer, endOdometer);
+    }
+
 }
