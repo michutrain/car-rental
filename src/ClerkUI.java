@@ -151,13 +151,19 @@ public class ClerkUI {
     }
 
     public void rentVehicle() throws IOException, SQLException {
-        String carType = "Compact"; // TODO: THESE NEED TO START AS NULL - THEY ONLY HAVE VALUES FOR TESTING PURPOSES
-        String location = "YVR - Vancouver";
-        String puDay = "1998-12-18";
-        String puTime = "12:00:00";
-        String rDay = "1998-12-19";
-        String rTime = "12:00:00";
+//        String carType = "Compact"; // TODO: THESE NEED TO START AS NULL - THEY ONLY HAVE VALUES FOR TESTING PURPOSES
+//        String location = "YVR - Vancouver";
+//        String puDay = "1998-12-18";
+//        String puTime = "12:00:00";
+//        String rDay = "1998-12-19";
+//        String rTime = "12:00:00";
 
+        String carType = "";
+        String location = "";
+        String puDay = "";
+        String puTime = "";
+        String rDay = "";
+        String rTime = "";
         while(location.isEmpty()){
             System.out.print("\nLocation: ");
             location = in.readLine();
@@ -190,9 +196,9 @@ public class ClerkUI {
         Timestamp dropTime = Timestamp.valueOf(rDay + " " + rTime);
         TimeInterval timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
         Customer c = new Customer(mainMenu);
-        System.out.println("BEFORE" + location);
+
         int available = c.getAvailableVehiclesCount(carType, location, timeInterval);
-        System.out.println("AFTER");
+
         if (available > 0) {
 
             boolean confirmed = false;
