@@ -1,11 +1,6 @@
 import Util.TimeInterval;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class Customer {
 
@@ -42,12 +37,14 @@ public class Customer {
         "UPDATE Vehicle SET status = ? WHERE vid = ?";
 
     private final String getCustomerByPhoneNumQuery =
-        "SELECT count(*) FROM Customer WHERE phoneNum = ?";
+        "SELECT COUNT(*) FROM Customer WHERE phoneNum = ?";
 
     private final String availableVehiclesDetailsQuery = 
         "SELECT * FROM VEHICLE WHERE vtname = ? and location = ?";
 
     private final String getAvailableVehiclesCountQuery =
+        "SELECT * FROM Vehicle";
+    private final String getAvailableVehiclesDetailsQuery =
         "SELECT * FROM Vehicle";
 
     public Customer(MainMenu mainMenu) {
@@ -165,7 +162,6 @@ public class Customer {
     }
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
-        ResultSet rs;
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesDetailsQuery;
 
@@ -182,7 +178,7 @@ public class Customer {
 
         sqlStatement += " ORDER BY location, vtname";
 
-        rs = getAvailableVehiclesDetails.executeQuery();
+        ResultSet rs = stmt.executeQuery(sqlStatement);
 
         // get info on ResultSet
         ResultSetMetaData rsmd = rs.getMetaData();
