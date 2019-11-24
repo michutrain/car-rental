@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
 
+import static Util.VehicleType.getVehicleType;
+
 public class ClerkUI {
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     private Clerk clerk;
@@ -264,11 +266,12 @@ public class ClerkUI {
                 Long startOdometer = clerk.getRentalOdometer(vid);
                 String vtname = clerk.getRentalType(vid);
 
-                VehicleType v = getVehicleType(vtname); // TODO: Do I need to set
+                VehicleType v = getVehicleType(vtname);
                 double amount = v.getTotalCost(rentalTime, timestamp, startOdometer, odometer) ;
 
                 clerk.returnVehicle(rid, vid, timestamp, fullTank, odometer, (long)amount);
-                System.out.print("Total Amount Owing: " + amount);
+                System.out.print("Total Amount Owing: " + amount + "\n");
+
             }
         } catch (IOException e) {
             e.getMessage();

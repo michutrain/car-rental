@@ -150,12 +150,14 @@ public class Customer {
     public boolean isCurrentlyRented(Long vid) throws SQLException{
         getVehicleStatus.setLong(1, vid);
         ResultSet result = getVehicleStatus.executeQuery();
+        result.next();
         return result.getLong("status") == 1;
     }
 
     public boolean validCustomer(String phoneNum) throws SQLException {
         getCustomerByPhoneNum.setString(1, phoneNum);
         ResultSet results = getCustomerByPhoneNum.executeQuery();
+        results.next();
         return results.getInt("total") > 0;
     }
 
