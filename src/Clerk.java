@@ -1,8 +1,6 @@
 import Util.Branch;
-import oracle.sql.TIMESTAMP;
 
 import java.sql.*;
-import java.util.Calendar;
 
 public class Clerk {
     private Connection con;
