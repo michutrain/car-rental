@@ -1,5 +1,7 @@
 package Util;
 
+import javafx.util.converter.TimeStringConverter;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +79,7 @@ public enum VehicleType {
                 (endOdometer - startOdometer) * krate;
     }
 
-    public double getTotalCost(Date rentalTime, Date returnTime, long startOdometer, long endOdometer) {
+    public double getTotalCost(Timestamp rentalTime, Timestamp returnTime, long startOdometer, long endOdometer) {
         long rentalTimeInms = rentalTime.getTime() - returnTime.getTime();
         long days = TimeUnit.DAYS.convert(rentalTimeInms, TimeUnit.MILLISECONDS);
         long weeks = days / 7;

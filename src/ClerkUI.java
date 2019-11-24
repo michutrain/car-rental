@@ -1,6 +1,7 @@
 import Util.Branch;
 import Util.TimeInterval;
 import Util.IDGen;
+import Util.VehicleType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -259,9 +260,15 @@ public class ClerkUI {
                 if(odometer == 0L) {
                     System.out.print("Invalid odometer - setting odometer to 0 \n");
                 }
-// TODO: Calculate amount owing
-                Long amount = 0L;
-                clerk.returnVehicle(rid, vid, timestamp, fullTank, odometer, amount);
+                Timestamp rentalTime = clerk.getRentalTime(vid);
+                Long startOdometer = clerk.getRentalOdometer(vid);
+                String vtname = clerk.getRentalType(vid);
+
+                VehicleType v = getVehicleType(vtname); // TODO: Do I need to set
+                double amount = v.getTotalCost(rentalTime, timestamp, startOdometer, odometer) ;
+
+                clerk.returnVehicle(rid, vid, timestamp, fullTank, odometer, (long)amount);
+                System.out.print("Total Amount Owing: " + amount);
             }
         } catch (IOException e) {
             e.getMessage();
