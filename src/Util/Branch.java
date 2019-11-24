@@ -12,6 +12,14 @@ public enum Branch {
         loc = location_city;
     }
 
+    public static Branch getBranch(String description) {
+        for (Branch b : Branch.values()) {
+            if (description.equals(b.loc))  return b;
+        }
+
+        return null;
+    }
+
     public String getLoc() {
         return loc;
     }

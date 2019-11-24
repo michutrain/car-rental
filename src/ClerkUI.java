@@ -1,3 +1,5 @@
+import Util.Branch;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -5,7 +7,7 @@ import java.sql.*;
 
 public class ClerkUI {
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    Clerk clerk;
+    private Clerk clerk;
     private MainMenu mainMenu;
 
     public ClerkUI(MainMenu mainMenu) {
@@ -13,58 +15,90 @@ public class ClerkUI {
         clerk = new Clerk(mainMenu.con);
     }
 
-    public void dailyRentalReport(int bid) {
-        if (bid == 0) {
-            // TODO: Generate Daily Report for All branches and display it
+    private void dailyRentalReport(String bid, String date) throws SQLException {
+        Branch b;
+        String dateStr;
+
+        if (!bid.isEmpty()) {
+            b = Branch.getBranch(bid);
+
+            if (b == null) {
+                System.out.println("Unknown Branch name given");
+                System.out.println();
+                System.out.println("Available branches: ");
+                for (Branch x : Branch.values()) {
+                    System.out.println(x.getLoc());
+                }
+            }
         } else {
-            // TODO: Generate Daily Rentals for Specific Branch (bid) and display it
+            b = null;
         }
+
+        if (date.isEmpty()) {
+            dateStr = new Date(System.currentTimeMillis()).toString();
+        } else {
+            dateStr = date;
+        }
+
+        clerk.generateDailyRentalsReport(b, dateStr);
     }
 
-    public void dailyReturnReport(int bid) {
-        if (bid == 0) {
-            // TODO: Generate Daily Return Report for All branches and display it
+    private void dailyReturnReport(String bid, String date) throws SQLException {
+        Branch b;
+        String dateStr;
+
+        if (!bid.isEmpty()) {
+            b = Branch.getBranch(bid);
+
+            if (b == null) {
+                System.out.println("Unknown Branch name given");
+                System.out.println();
+                System.out.println("Available branches: ");
+                for (Branch x : Branch.values()) {
+                    System.out.println(x.getLoc());
+                }
+            }
         } else {
-            // TODO: Generate Daily Return for Specific Branch (bid) and display it
+            b = null;
         }
+
+        if (date.isEmpty()) {
+            dateStr = new Date(System.currentTimeMillis()).toString();
+        } else {
+            dateStr = date;
+        }
+
+        clerk.generateDailyReturnsReport(b, dateStr);
     }
 
-    public void reportsMenu() {
+    private void reportsMenu() {
         int choice = 0;
         boolean quit = false;
         try {
 
             while (!quit) {
-                if (choice == 0) {
-                    System.out.print("\nReport Menu: \n");
-                    System.out.print("1:  Daily Rentals\n");
-                    System.out.print("2:  Daily Returns\n");
-                    System.out.print("5:  Back to Clerk Menu\n");
-                    choice = Integer.parseInt(in.readLine());
-                }
+                System.out.print("\nReport Menu: \n");
+                System.out.print("1:  Daily Rentals Report\n");
+                System.out.print("2:  Daily Returns Report\n");
+                System.out.print("5:  Back to Clerk Menu\n");
+                choice = Integer.parseInt(in.readLine());
+
                 if (choice == 1) {
-                    System.out.print("\nBranch ID (optional): \n");
+                    System.out.print("\nBranch location-city (optional): \n");
                     String bid = in.readLine();
-                    if (bid.isEmpty()) {
-                        dailyRentalReport(0);
-                    } else {
-                        dailyRentalReport(Integer.parseInt(bid));
-                    }
-                    choice = 0;
+                    System.out.println("What day would you like to look at (enter in format yyyy-mm-dd) (optional. None provided means use today's date): ");
+                    String date = in.readLine();
+                    dailyRentalReport(bid, date);
                 } else if (choice == 2) {
-                    System.out.print("\nBranch ID (optional): \n");
+                    System.out.print("\nBranch location-city (optional): \n");
                     String bid = in.readLine();
-                    if (bid.isEmpty()) {
-                        dailyReturnReport(0);
-                    } else {
-                        dailyReturnReport(Integer.parseInt(bid));
-                    }
-                    choice = 0;
+                    System.out.println("What day would you like to look at (enter in format yyyy-mm-dd) (optional. None provided means use today's date): ");
+                    String date = in.readLine();
+                    dailyReturnReport(bid, date);
                 } else if (choice == 5) {
                     quit = true;
                 } else {
                     System.out.print("Invalid Choice - Please select again \n");
-                    choice = 0;
                 }
 
                 System.out.println(" ");
@@ -73,7 +107,9 @@ public class ClerkUI {
             System.out.println("Returning to Clerk Menu\n");
             clerkMenu();
         } catch (IOException | SQLException e) {
-            System.out.println("IOException!");
+            e.getMessage();
+            e.printStackTrace();
+            System.exit(-1);
 
 /*
                 try {
@@ -97,7 +133,8 @@ public class ClerkUI {
                 // TODO: If vehicle was rented, update the database to return it
             }
         } catch (IOException e) {
-            System.out.println("IOException!");
+            e.getMessage();
+            e.printStackTrace();
 
 /*                try
                 {
@@ -133,6 +170,7 @@ public class ClerkUI {
 
             if (loc.isEmpty() || vType.isEmpty() || puDay.isEmpty() || puTime.isEmpty() || rDay.isEmpty() || rTime.isEmpty()) {
                 System.out.print("Invalid Parameters\n");
+                return;
             }
             boolean available = false;
             // TODO: check if vehicle is available (SQL)
@@ -174,7 +212,6 @@ public class ClerkUI {
     }
 
     public void clerkMenu() throws SQLException{
-        MainMenu b = new MainMenu();
         int firstChoice = 0;
         boolean quit;
         quit = false;
@@ -215,7 +252,7 @@ public class ClerkUI {
             }
 
             System.out.println("Returning to Home Screen\n");
-            b.showMenu();
+            mainMenu.showMenu();
         }
 //        catch (SQLException ex) {
 //            System.out.println("Message: " + ex.getMessage());
