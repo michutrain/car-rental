@@ -40,7 +40,47 @@ public class ClerkUI {
             dateStr = date;
         }
 
-        clerk.generateDailyRentalsReport(b, dateStr);
+        ResultSet[] report = clerk.generateDailyRentalsReport(b, dateStr);
+
+        ResultSet vehiclesRentedOut = report[0];
+
+        System.out.println();
+        System.out.println("Vehicles rented out today:");
+        System.out.println();
+        System.out.println("Vehicle ID");
+        while (vehiclesRentedOut.next()) {
+            System.out.println(vehiclesRentedOut.getInt("vid"));
+        }
+
+        ResultSet numVehicleRentedPerCategory = report[1];
+        System.out.println();
+        System.out.println("The number of vehicles rented per category today");
+        System.out.println();
+        System.out.println("Vehicle category  |  Number rented   ");
+        while (numVehicleRentedPerCategory.next()) {
+            System.out.println(numVehicleRentedPerCategory.getString(1) + "      " +
+                    numVehicleRentedPerCategory.getLong(2));
+        }
+
+        ResultSet numRentalsPerBranch = report[2];
+        System.out.println();
+        System.out.println("The number of vehicles rented per branch today");
+        System.out.println();
+        System.out.println("Branch  |  Vehicles rented   ");
+        while (numRentalsPerBranch.next()) {
+            System.out.println(numRentalsPerBranch.getString(1) + "      " +
+                    numRentalsPerBranch.getLong(2));
+        }
+
+
+        ResultSet totalNumOfVehiclesRentedToday = report[3];
+        System.out.println();
+        System.out.println("The total number of vehicles rented out today");
+        System.out.println();
+        System.out.println("Number of vehicles rented: ");
+        while(totalNumOfVehiclesRentedToday.next()) {
+            System.out.println(totalNumOfVehiclesRentedToday.getLong(1));
+        }
     }
 
     private void dailyReturnReport(String bid, String date) throws SQLException {
@@ -68,7 +108,68 @@ public class ClerkUI {
             dateStr = date;
         }
 
-        clerk.generateDailyReturnsReport(b, dateStr);
+        ResultSet[] report = clerk.generateDailyReturnsReport(b, dateStr);
+
+        ResultSet allVehiclesReturnedToday = report[0];
+
+        System.out.println();
+        System.out.println("The vehicles returned today");
+        System.out.println();
+        System.out.println("Vehicle ID");
+
+        while (allVehiclesReturnedToday.next()) {
+            System.out.println(allVehiclesReturnedToday.getInt("vid"));
+        }
+
+        ResultSet numVehiclesPerCategory = report[1];
+
+        System.out.println();
+        System.out.println("The number of vehicles returned today by category");
+        System.out.println();
+        System.out.println("Vehicle category     |   Number");
+
+        while (allVehiclesReturnedToday.next()) {
+            System.out.println(allVehiclesReturnedToday.getString(1) + "       " +
+                    allVehiclesReturnedToday.getLong(2));
+        }
+
+        ResultSet revenuePerCategory = report[2];
+
+        System.out.println();
+        System.out.println("Revenue per vehicle category earned today");
+        System.out.println();
+        System.out.println("Vehicle category     |   Revenue earned");
+
+        while (allVehiclesReturnedToday.next()) {
+            System.out.println(allVehiclesReturnedToday.getString(1) + "       " +
+                    allVehiclesReturnedToday.getLong(2));
+        }
+
+        ResultSet subtotalsForVehicleAndRevenuePerBr = report[3];
+
+        System.out.println();
+        System.out.println("Subtotals for the number of vehicles and revenue per branch today");
+        System.out.println();
+        System.out.println("Branch     |   Number of vehicles    |   Revenue earned");
+
+        while (subtotalsForVehicleAndRevenuePerBr.next()) {
+            System.out.println(
+                    subtotalsForVehicleAndRevenuePerBr.getString(1) + "       " +
+                    subtotalsForVehicleAndRevenuePerBr.getLong(2) + "        " +
+                    subtotalsForVehicleAndRevenuePerBr.getLong(3)
+            );
+        }
+
+        ResultSet grandTotals = report[4];
+
+        System.out.println();
+        System.out.println("Grand totals for today");
+        System.out.println();
+        System.out.println("Vehicles returned     |   Revenue earned");
+
+        while (grandTotals.next()) {
+            System.out.println(grandTotals.getLong(1) + "          " + grandTotals.getLong(2));
+        }
     }
 
     private void reportsMenu() {

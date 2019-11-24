@@ -82,7 +82,7 @@ public class Clerk {
         query.append(" FROM Vehicle v WHERE");
 
         if (br != null) {
-            query.append( " v.branch = ").append(br.getLoc()).append(" AND");
+            query.append( " v.branch = '").append(br.getLoc()).append("' AND");
         }
 
         query.append( " v.vid IN")
@@ -138,13 +138,13 @@ public class Clerk {
     }
 
     private String getallVehiclesReturnedTodayQS(Branch br, String date) {
-        String toRet = "SELECT * FROM Vehicle v WHERE ";
+        String toRet = "SELECT * FROM Vehicle v WHERE";
 
         if (br != null) {
-            toRet += " v.branch = " + br.getLoc() + " AND";
+            toRet += " v.branch = '" + br.getLoc() + "' AND";
         }
 
-        toRet += "v.vid IN (SELECT r.vid FROM Return r WHERE TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+        toRet += " v.vid IN (SELECT r.vid FROM Return r WHERE TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
                 date
                 + "','YYYY-MM-DD'))  ORDER BY v.branch, v.vtname";
 
@@ -152,13 +152,13 @@ public class Clerk {
     }
 
     private String numVehiclesPerCategory(Branch br, String date) {
-        String toRet = "SELECT COUNT(*) FROM Vehicle v WHERE ";
+        String toRet = "SELECT v.vtname, COUNT(*) FROM Vehicle v WHERE";
 
         if (br != null) {
-            toRet += " v.branch = " + br.getLoc() + " AND";
+            toRet += " v.branch = '" + br.getLoc() + "' AND";
         }
 
-        toRet += "v.vid IN (SELECT r.vid FROM Return r WHERE TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
+        toRet += " v.vid IN (SELECT r.vid FROM Return r WHERE TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
                 date +
                 "','YYYY-MM-DD')) GROUP BY v.vtname";
 
@@ -169,7 +169,7 @@ public class Clerk {
         String toRet = "SELECT v.vtname, SUM(r.value) FROM Return r, Vehicle v WHERE";
 
         if (br != null) {
-            toRet += " v.branch = " + br.getLoc() + " AND";
+            toRet += " v.branch = '" + br.getLoc() + "' AND";
         }
 
 
@@ -181,10 +181,10 @@ public class Clerk {
     }
 
     private String subtotalsForVehicleAndRevenuePerBr(Branch br, String date) {
-        String toRet = "SELECT COUNT(v.vid), SUM(r.value) FROM Return r, Vehicle v WHERE";
+        String toRet = "SELECT v.branch, COUNT(v.vid), SUM(r.value) FROM Return r, Vehicle v WHERE";
 
         if (br != null) {
-            toRet += " v.branch = " + br.getLoc() + " AND";
+            toRet += " v.branch = '" + br.getLoc() + "' AND";
         }
 
         toRet += " v.vid = r.vid AND TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
@@ -195,15 +195,15 @@ public class Clerk {
     }
 
     private String grandTotals(Branch br, String date) {
-        String toRet = "SELECT SUM(r.value) FROM Return r, Vehicle v WHERE";
+        String toRet = "SELECT COUNT(v.vid), SUM(r.value) FROM Return r, Vehicle v WHERE";
 
         if (br != null) {
-            toRet += " v.branch = " + br.getLoc() + " AND";
+            toRet += " v.branch = '" + br.getLoc() + "' AND";
         }
 
         toRet += " v.vid = r.vid AND TRUNC(CAST(r.stamp AS DATE)) = TO_DATE('" +
                 date +
-                "','YYYY-MM-DD') GROUP BY v.branch";
+                "','YYYY-MM-DD')";
 
         return toRet;
     }
