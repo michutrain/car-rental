@@ -249,6 +249,6 @@ public class Clerk {
     }
 
     public ResultSet getVehicleDetails(long targetVid) throws SQLException {
-        return con.createStatement().executeQuery("SELECT * FROM VEHICLE WHERE VID = " + targetVid);
+        return con.createStatement().executeQuery("SELECT * FROM Vehicle WHERE vid = " + targetVid);
     }
 }
