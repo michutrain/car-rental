@@ -29,7 +29,7 @@ INSERT INTO Customer(dlicense, cellphone, name, address) VALUES
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
         (1, '123456', 'Toyota', 'Camry', 1998, 'Yellow', 20981, 0, 'Economy', 'Robson St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (2, '789101', 'Toyota', 'Camry', 1999, 'Yellow', 20981, 0, 'Economy', 'YVR');
+        (2, '789101', 'Toyota', 'Camry', 1999, 'Yellow', 20981, 0, 'Economy', 'YVR - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
         (3, '1121314', 'Honda', 'Civic', 2000, 'Yellow', 20981, 0, 'Standard', 'Granville St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
