@@ -161,10 +161,12 @@ public class Customer {
 
         if (branch.length() != 0) {
             sqlStatement += " AND branch = \'" + branch + "\'";
+        } else {
+            sqlStatement += " AND branch = '" + Branch.getDefault() + "'";
         }
 
         if (interval != null) {
-            sqlStatement += " AND status = '0'";
+            sqlStatement += " AND status = 0 ";
         }
 
         sqlStatement += " ORDER BY branch, vtname";
