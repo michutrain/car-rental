@@ -40,19 +40,19 @@ public class Customer {
             "UPDATE Vehicle SET status = ? WHERE vid = ?";
 
     private final String getCustomerByDLicenseQuery =
-            "SELECT COUNT(*) AS total FROM Customer WHERE DLICENSE = ?";
+            "SELECT COUNT(*) AS total FROM Customer WHERE dlicense = ?";
 
     private final String getCustomerByPhoneNumQuery =
             "SELECT COUNT(*) FROM Customer WHERE cellphone = ?";
 
     private final String getAvailableVehiclesDetailsQuery =
-            "SELECT * FROM VEHICLE WHERE vtname = ? and branch = ?";
+            "SELECT * FROM Vehicle WHERE vtname = ? and branch = ?";
 
     private final String getAvailableVehiclesCountQuery =
             "SELECT COUNT(*) AS total FROM Vehicle";
 
     private final String getVehicleStatusQuery =
-            "SELECT STATUS FROM Vehicle WHERE vid = ?";
+            "SELECT Status FROM Vehicle WHERE vid = ?";
 
 //    private final String getCustomerInformationQuery =
 //            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
@@ -107,7 +107,7 @@ public class Customer {
         addCustomer.setString(3, phoneNum);
         addCustomer.setString(4, address);
 
-        addVehicle.executeUpdate();
+        addCustomer.executeUpdate(); // Message: ORA-00904: "PHONENUM": invalid identifier
     }
 
     public ResultSet getCustomerInformation(String name, long phoneNum) throws SQLException {

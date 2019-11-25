@@ -20,10 +20,10 @@ public class CustomerUI {
         try {
             while (!quit) {
                 if (firstChoice == 0) {
-                    System.out.print("\nCustomer Menu: \n");
-                    System.out.print("1:  View Available Vehicles\n");
-                    System.out.print("2:  Make a Reservation\n");
-                    System.out.print("5:  Back to Main Menu\n");
+                    System.out.println("Customer Menu: ");
+                    System.out.println("1:  View Available Vehicles");
+                    System.out.println("2:  Make a Reservation");
+                    System.out.println("5:  Back to Main Menu");
                     firstChoice = Integer.parseInt(in.readLine());
                 }
                 if (firstChoice == 1) {
@@ -59,27 +59,27 @@ public class CustomerUI {
         String carType;
         String location;
         Customer c = new Customer(mainMenu);
-        System.out.print("\nLocation: ");
+        System.out.println("Location: ");
         location = in.readLine();
 
-        System.out.print("\nCar Type: ");
+        System.out.println("Car Type: ");
         carType = in.readLine();
 
-        System.out.print("Pickup Day: \n");
+        System.out.println("Pickup Day (YYYY-MM-DD):");
         String puDay = in.readLine();
 
-        System.out.print("Pickup Time: \n");
+        System.out.println("Pickup Time (HH:MM:SS):");
         String puTime = in.readLine();
 
-        System.out.print("Return Day: \n");
+        System.out.println("Return Day (YYYY-MM-DD):");
         String rDay = in.readLine();
 
-        System.out.print("Return Time: \n");
+        System.out.println("Return Time (HH:MM:SS):");
         String rTime = in.readLine();
 
 
         if (location.isEmpty() || carType.isEmpty() || puDay.isEmpty() || puTime.isEmpty() || rDay.isEmpty() || rTime.isEmpty()) {
-            System.out.print("Invalid Parameters\n");
+            System.out.println("Invalid Parameters");
         }
 
         TimeInterval timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
@@ -89,18 +89,30 @@ public class CustomerUI {
             boolean confirmed = false;
             String pNum = "";
             String name = "";
+            String dlicense = "";
+            String address = "";
             while (!confirmed) {
+
                 if (pNum.isEmpty()) {
-                    System.out.print("Please provide a valid Phone Number:\n");
+                    System.out.println("Please provide a valid phone number:");
                     pNum = in.readLine();
+
                 } else if (name.isEmpty()) {
-                    System.out.print("Please Provide a Valid Name\n");
+                    System.out.println("Please provide a valid name:");
                     name = in.readLine();
+
                 } else {
                     boolean isValid = c.validCustomer(pNum);
                     if (!isValid) {
-                        // c.addCustomer(pNum); TODO FIX
-                        System.out.print("No Existing Customer Found - " + name + " added to Customers Database\n");
+                        System.out.println("No Existing Customer Found - " + name + " added to Customers Database");
+
+                        System.out.println("Please provide a valid driver's license id");
+                        dlicense = in.readLine();
+
+                        System.out.println("Please provide a valid address");
+                        address = in.readLine();
+
+                        c.addCustomer(dlicense, name, pNum, address);
                     }
                     int confNum = c.makeReservation(carType, location, timeInterval);
                     System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
@@ -111,37 +123,37 @@ public class CustomerUI {
                 }
             }
         } else {
-            System.out.print("No Available Vehicles\n");
+            System.out.println("No Available Vehicles");
         }
     }
 
     public void showAvailableVehicles() throws SQLException, IOException {
         Customer c = new Customer(mainMenu);
 //        try {
-            System.out.print("Location: \n");
+            System.out.println("Location:");
             String loc = in.readLine();
 
-            System.out.print("Vehicle Type: \n");
+            System.out.println("Vehicle Type:");
             String vType = in.readLine();
 
-            System.out.print("Pickup Day: \n");
+            System.out.println("Pickup Day:");
             String puDay = in.readLine();
 
-            System.out.print("Pickup Time: \n");
+            System.out.println("Pickup Time:");
             String puTime = in.readLine();
 
-            System.out.print("Return Day: \n");
+            System.out.println("Return Day:");
             String rDay = in.readLine();
 
-            System.out.print("Return Time: \n");
+            System.out.println("Return Time:");
             String rTime = in.readLine();
 
-            int count = c.getAvailableVehiclesCount(vType, loc, new TimeInterval(puDay, puTime, rDay, rTime));
-            System.out.print("Available Vehicles: " + count + "\n");
+            int count = c.getAvailableVehiclesCount(vType, loc, new TimeInterval(puTime, puDay, rTime, rDay));
+            System.out.print("Available Vehicles:" + count + "\n");
 
-            System.out.print("See Vehicles Details: \n");
-            System.out.print("1: Yes\n");
-            System.out.print("2: No\n");
+            System.out.println("See Vehicles Details: ");
+            System.out.println("1: Yes");
+            System.out.println("2: No");
             int details = Integer.parseInt(in.readLine());
             if (details == 1) {
                 c.showAvailableVehiclesDetails(vType, loc);
