@@ -249,6 +249,6 @@ public class Customer {
     }
 
     public ResultSet getAllDetailsAboutReservation(int confNum) throws SQLException {
-        return mainMenu.con.createStatement().executeQuery("SELECT * FROM RESERVATION WHERE confNum = " + confNum);
+        return mainMenu.con.createStatement().executeQuery("SELECT * FROM RESERVATION WHERE confNo = " + confNum);
     }
 }
