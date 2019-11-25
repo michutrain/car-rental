@@ -24,7 +24,7 @@ public class Customer {
 
     private final String addCustomerQuery =
             "INSERT INTO Customer" +
-                    " (dlicense, name, phoneNum, address)" +
+                    " (dlicense, name, cellphone, address)" +
                     " VALUES (?, ?, ?, ?)";
 
     private final String makeReservationQuery =
