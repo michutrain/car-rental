@@ -1,3 +1,4 @@
+import Util.Branch;
 import Util.TimeInterval;
 
 import java.io.BufferedReader;
@@ -115,7 +116,7 @@ public class CustomerUI {
     public void showAvailableVehicles() throws SQLException, IOException {
         Customer c = new Customer(mainMenu);
 //        try {
-        System.out.println("Location:");
+        System.out.println("Location: (default: " + Branch.getDefault().getLoc() + ")");
         String loc = in.readLine();
 
         System.out.println("Vehicle Type:");
