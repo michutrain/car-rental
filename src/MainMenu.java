@@ -142,43 +142,37 @@ public class MainMenu implements ActionListener {
      */
     public void showMenu()
     {
-        int choice;
         ClerkUI clerk = new ClerkUI(this);
-        boolean quit = false;
 
         try {
-            while (!quit) {
+            menu:
+            while (true) {
 
-                System.out.print("---------------Main Menu---------------");
-                System.out.print("\nPlease choose one of the following: \n");
+                System.out.println("---------------Main Menu---------------");
+                System.out.println("Please choose one of the following:");
 
                 System.out.println("1:  Customer Menu ");
                 System.out.println("2:  Clerk Menu");
                 System.out.println("3:  Manual Mode");
                 System.out.println("5.  Quit");
-                System.out.println(">>");
 
-
-                choice = Integer.parseInt(in.readLine());
-                System.out.println(" ");
-
-                switch(choice)
+                switch(in.readLine())
                 {
-                    case 1:
+                    case "1":
                         new CustomerUI(this);
                         break;
-                    case 2:
+                    case "2":
                         clerk.clerkMenu();
                         break;
-                    case 3:
+                    case "3":
                         manualMode();
                         break;
-                    case 5:
-                        quit = true;
-                        break;
+                    case "5":
+                        break menu;
                     default:
                         System.out.println("Unrecognized response");
                         System.out.println();
+                        break;
                 }
             }
 
@@ -213,9 +207,8 @@ public class MainMenu implements ActionListener {
     }
 
     private void manualMode() throws SQLException , IOException{
-        boolean quit = false;
-
-        while (!quit) {
+        menu:
+        while (true) {
             System.out.println("1: View all tables in database");
             System.out.println("2: Add data to a database");
             System.out.println("3: Delete data from a database");
@@ -284,11 +277,9 @@ public class MainMenu implements ActionListener {
                     System.out.println();
                     break;
                 case "6":
-                    quit = true;
-                    break;
+                    break menu;
                 default:
                     System.out.println("Unrecognized option");
-                    System.out.println();
             }
         }
     }

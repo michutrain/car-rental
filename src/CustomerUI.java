@@ -14,14 +14,14 @@ public class CustomerUI {
 
         this.mainMenu = mainMenu;
 
-        System.out.println("Customer Menu: ");
-        System.out.println("1:  View Available Vehicles");
-        System.out.println("2:  Make a Reservation");
-        System.out.println("5:  Back to Main Menu");
-
         try {
             main:
             while (true) {
+                System.out.println("Customer Menu: ");
+                System.out.println("1:  View Available Vehicles");
+                System.out.println("2:  Make a Reservation");
+                System.out.println("5:  Back to Main Menu");
+
                 switch (in.readLine()) {
                     case "1":
                         showAvailableVehicles();

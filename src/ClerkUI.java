@@ -179,38 +179,43 @@ public class ClerkUI {
 
     private void reportsMenu() {
         try {
+            menu:
             while (true) {
-                System.out.print("\nReport Menu: \n");
-                System.out.print("1:  Daily Rentals Report\n");
-                System.out.print("2:  Daily Returns Report\n");
-                System.out.print("5:  Back to Clerk Menu\n");
-                int choice = Integer.parseInt(in.readLine());
+                System.out.println("Report Menu: ");
+                System.out.println("1:  Daily Rentals Report");
+                System.out.println("2:  Daily Returns Report");
+                System.out.println("5:  Back to Clerk Menu");
 
-                if (choice == 1) {
-                    System.out.print("\nBranch location-city (optional): \n");
-                    String bid = in.readLine();
-                    System.out.println("What day would you like to look at (enter in format yyyy-mm-dd) (optional. None provided means use today's date): ");
-                    String date = in.readLine();
-                    dailyRentalReport(bid, date);
-                } else if (choice == 2) {
-                    System.out.print("\nBranch location-city (optional): \n");
-                    String bid = in.readLine();
-                    System.out.println("What day would you like to look at (enter in format yyyy-mm-dd) (optional. None provided means use today's date): ");
-                    String date = in.readLine();
-                    dailyReturnReport(bid, date);
-                } else if (choice == 5) {
-                    break;
-                } else {
-                    System.out.print("Invalid Choice - Please select again \n");
+                String bid;
+                String date;
+
+                switch(in.readLine()) {
+                    case "1":
+                        System.out.println("Branch location-city (optional): ");
+                        bid = in.readLine();
+                        System.out.println("What day would you like to look at (enter in format yyyy-mm-dd) (optional. None provided means use today's date): ");
+                        date = in.readLine();
+                        dailyRentalReport(bid, date);
+                        break;
+                    case "2":
+                        System.out.println("Branch location-city (optional): ");
+                        bid = in.readLine();
+                        System.out.println("What day would you like to look at (enter in format yyyy-mm-dd) (optional. None provided means use today's date): ");
+                        date = in.readLine();
+                        dailyReturnReport(bid, date);
+                        break;
+                    case "5":
+                        break menu;
+                    default:
+                        System.out.println("Invalid Choice - Please select again ");
+                        break;
                 }
 
                 System.out.println(" ");
             }
 
             System.out.println("Returning to Clerk Menu\n");
-            clerkMenu();
         } catch (IOException | SQLException e) {
-            e.getMessage();
             e.printStackTrace();
             System.exit(-1);
         }
@@ -352,38 +357,36 @@ public class ClerkUI {
     }
 
     public void clerkMenu() throws SQLException{
-        boolean quit = false;
         try {
-            while (!quit) {
-                System.out.print("\nClerk Menu: \n");
-                System.out.print("1:  Rent a Vehicle\n");
-                System.out.print("2:  Return a Vehicle\n");
-                System.out.print("3:  Reports\n");
-                System.out.print("5:  Back to Main Menu\n");
-                int choice = Integer.parseInt(in.readLine());
+            menu:
+            while (true) {
+                System.out.println("Clerk Menu: ");
+                System.out.println("1:  Rent a Vehicle");
+                System.out.println("2:  Return a Vehicle");
+                System.out.println("3:  Reports");
+                System.out.println("5:  Back to Main Menu");
 
-                switch (choice) {
-                    case 1:
+                switch (in.readLine()) {
+                    case "1":
                         rentVehicle();
                         break;
-                    case 2:
+                    case "2":
                         returnVehicle();
                         break;
-                    case 3:
+                    case "3":
                         reportsMenu();
                         break;
-                    case 5:
-                        quit = true;
-                        break;
+                    case "5":
+                        break menu;
                     default:
                         System.out.println("Invalid Choice - Please select again");
+                        break;
                 }
             }
 
-            System.out.println("Returning to Home Screen\n");
+            System.out.println("Returning to Home Screen");
             mainMenu.showMenu();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }

@@ -34,7 +34,7 @@ public class Customer {
                     " VALUES (?, ?, ?, ?)";
 
     private final String getAvailableVehicleQuery =
-            "SELECT vid FROM Vehicle WHERE vtname = ? AND branch = ? AND rownum = 1";
+            "SELECT vid FROM Vehicle WHERE status = '0' AND vtname = ? AND branch = ? AND rownum = 1";
 
     private final String getVehicleQuery =
             "UPDATE Vehicle SET status = ? WHERE vid = ?";
@@ -156,11 +156,11 @@ public class Customer {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesCountQuery;
 
-        if (carType.length() != 0) {
+        if (!carType.isEmpty()) {
             sqlStatement += " AND vtname = \'" + carType + "\'";
         }
 
-        if (branch.length() != 0) {
+        if (!branch.isEmpty()) {
             sqlStatement += " AND branch = \'" + branch + "\'";
         } else {
             sqlStatement += " AND branch = '" + Branch.getDefault() + "'";
@@ -184,21 +184,21 @@ public class Customer {
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
-        String sqlStatement = "SELECT * FROM Vehicle";
+        String sqlStatement = "SELECT * FROM Vehicle WHERE status = '0'";
 
         String type = "\'" + carType + "\'";
         String loc = "\'" + location + "\'";
 
-        if (carType.length() != 0) {
+        if (!carType.isEmpty()) {
             sqlStatement += " AND vtname = " + type;
         }
 
-        if (location.length() != 0) {
+        if (!location.isEmpty()) {
             sqlStatement += " AND branch = " + loc;
         }
 
         sqlStatement += " ORDER BY branch, vtname";
-        ResultSet rs = stmt.executeQuery(sqlStatement.replaceFirst("AND", "WHERE"));
+        ResultSet rs = stmt.executeQuery(sqlStatement);
         // get info on ResultSet
         ResultSetMetaData rsmd = rs.getMetaData();
 
