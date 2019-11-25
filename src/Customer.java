@@ -2,7 +2,6 @@ import Util.TimeInterval;
 
 import java.sql.*;
 
-
 public class Customer {
 
     private PreparedStatement addVehicle;
@@ -45,14 +44,11 @@ public class Customer {
     private final String getCustomerByPhoneNumQuery =
             "SELECT COUNT(*) FROM Customer WHERE cellphone = ?";
 
-    private final String getAvailableVehiclesDetailsQuery =
-            "SELECT * FROM Vehicle WHERE vtname = ? and branch = ?";
-
     private final String getAvailableVehiclesCountQuery =
             "SELECT COUNT(*) AS total FROM Vehicle";
 
     private final String getVehicleStatusQuery =
-            "SELECT Status FROM Vehicle WHERE vid = ?";
+            "SELECT status FROM Vehicle WHERE vid = ?";
 
 //    private final String getCustomerInformationQuery =
 //            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
@@ -72,8 +68,6 @@ public class Customer {
             getVehicleStatement = this.mainMenu.con.prepareStatement(getVehicleQuery);
 
             getCustomerByDLicense = this.mainMenu.con.prepareStatement(getCustomerByDLicenseQuery);
-
-            getAvailableVehiclesDetails = this.mainMenu.con.prepareStatement(getAvailableVehiclesDetailsQuery);
 
             getAvailableVehiclesCount = this.mainMenu.con.prepareStatement(getAvailableVehiclesCountQuery);
 
@@ -169,44 +163,37 @@ public class Customer {
         String sqlStatement = getAvailableVehiclesCountQuery;
         String type =  "\'" + carType + "\'";
         String loc = "\'" + branch + "\'";
-        int ret = 0;
 
-        if (carType != null) {
-            sqlStatement += " WHERE vtname = " + type;
+        if (carType.length() != 0) {
+            sqlStatement += " AND vtname = " + type;
+        }
 
-            if (branch != null) {
-                sqlStatement += " AND branch = " + loc;
-            }
+        if (branch.length() != 0) {
+            sqlStatement += " AND branch = " + loc;
+        }
 
-            if (interval != null) {
-                sqlStatement += " AND status = 0 ";
-            }
-
-        } else if (branch != null) {
-            sqlStatement += "WHERE branch = " + loc;
-
-            if (interval != null) {
-                sqlStatement += " AND status = 0 ";
-            }
-
-        } else if (interval != null) {
-            sqlStatement += "WHERE status = 0 ";
+        if (interval != null) {
+            sqlStatement += " AND status = 0 ";
         }
 
         sqlStatement += " ORDER BY branch, vtname";
 
-        ResultSet results = stmt.executeQuery(sqlStatement);
-        while(results.next()){
-            ret = results.getInt("total");
-        }
-        return ret;
+        System.out.println("'" + sqlStatement.replaceFirst("AND", "WHERE") + "'");
+
+        ResultSet results = stmt.executeQuery(sqlStatement.replaceFirst("AND", "WHERE"));
+
+        results.next();
+        return results.getInt("total");
     }
 
+    // TODO: dont need this
     public ResultSet getAvailableVehicles(String carType, String location) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesCountQuery;
+
         String type =  "\'" + carType + "\'";
         String loc = "\'" + location + "\'";
+
         if (carType != null) {
             sqlStatement += " WHERE vtname = " + type;
 
@@ -223,49 +210,41 @@ public class Customer {
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
-        String sqlStatement = getAvailableVehiclesDetailsQuery;
+        String sqlStatement = "SELECT * FROM Vehicle";
+
         String type =  "\'" + carType + "\'";
         String loc = "\'" + location + "\'";
-        if (carType != null) {
-            sqlStatement += " WHERE vtname = " + type;
 
-            if (location != null) {
-                sqlStatement += " AND branch = " + loc;
-            }
+        if (carType.length() != 0) {
+            sqlStatement += " AND vtname = " + type;
+        }
 
-        } else if (location != null) {
-            sqlStatement += "WHERE branch = " + loc;
+        if (location.length() != 0) {
+            sqlStatement += " AND branch = " + loc;
         }
 
         sqlStatement += " ORDER BY branch, vtname";
-        System.out.println("ORDERED SUCCESSFULLY");
-        ResultSet rs = stmt.executeQuery(sqlStatement);
-        System.out.println("ORDERED SUCCESSFULLY and got to next line");
+        ResultSet rs = stmt.executeQuery(sqlStatement.replaceFirst("AND", "WHERE"));
         // get info on ResultSet
         ResultSetMetaData rsmd = rs.getMetaData();
 
         // get number of columns
-        int numCols = rsmd.getColumnCount() > 15 ? 15 : rsmd.getColumnCount();
+        int numCols = rsmd.getColumnCount();
+
+        // display column names;
+        for (int i = 1; i <= numCols; i++) {
+            // get column name and print it
+            System.out.printf("%-10.10s", rsmd.getColumnName(i));
+        }
 
         System.out.println();
 
-        // display column names;
-        for (int i = 0; i < numCols; i++) {
-            // get column name and print it
-            System.out.printf("%-15s", rsmd.getColumnName(i + 1));
-        }
-
-        int count = 0;
-        while (rs.next() && count < 15) {
-            String make = rs.getString("MAKE");
-            System.out.printf("%-10.10s", make);
-
-            String model = rs.getString("MODEL");
-            System.out.printf("%-20.20s", model);
-
-            String vLocation = rs.getString("BRANCH");
-            System.out.printf("%-20.20s", vLocation);
-            count++;
+        for (int row = 0; row < 15; row ++) {
+            if (!rs.next()) break;
+            for (int i = 1; i <= numCols; i++) {
+                System.out.printf("%-10.10s", rs.getString(i));
+            }
+            System.out.println();
         }
     }
 

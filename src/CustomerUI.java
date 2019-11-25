@@ -42,7 +42,7 @@ public class CustomerUI {
                 System.out.println(" ");
             }
 
-            System.out.println("Returning to Home Screen\n");
+            System.out.println("Returning to Home Screen");
         } catch (IOException e) {
             System.out.println("IOException!");
 
@@ -130,34 +130,43 @@ public class CustomerUI {
     public void showAvailableVehicles() throws SQLException, IOException {
         Customer c = new Customer(mainMenu);
 //        try {
-            System.out.println("Location:");
-            String loc = in.readLine();
+        System.out.println("Location:");
+        String loc = in.readLine();
 
-            System.out.println("Vehicle Type:");
-            String vType = in.readLine();
+        System.out.println("loc:" + loc);
 
-            System.out.println("Pickup Day:");
-            String puDay = in.readLine();
+        System.out.println("Vehicle Type:");
+        String vType = in.readLine();
 
-            System.out.println("Pickup Time:");
-            String puTime = in.readLine();
+        System.out.println("Pickup Day:");
+        String puDay = in.readLine();
 
-            System.out.println("Return Day:");
-            String rDay = in.readLine();
+        System.out.println("Pickup Time:");
+        String puTime = in.readLine();
 
-            System.out.println("Return Time:");
-            String rTime = in.readLine();
+        System.out.println("Return Day:");
+        String rDay = in.readLine();
 
-            int count = c.getAvailableVehiclesCount(vType, loc, new TimeInterval(puTime, puDay, rTime, rDay));
-            System.out.print("Available Vehicles:" + count + "\n");
+        System.out.println("Return Time:");
+        String rTime = in.readLine();
 
-            System.out.println("See Vehicles Details: ");
-            System.out.println("1: Yes");
-            System.out.println("2: No");
-            int details = Integer.parseInt(in.readLine());
-            if (details == 1) {
-                c.showAvailableVehiclesDetails(vType, loc);
-            }
+
+        TimeInterval timeInterval = null;
+
+        try {
+            timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
+        } catch (Exception e) {}
+
+        int count = c.getAvailableVehiclesCount(vType, loc, timeInterval);
+        System.out.print("Available Vehicles:" + count + "\n");
+
+        System.out.println("See Vehicles Details: ");
+        System.out.println("1: Yes");
+        System.out.println("2: No");
+        int details = Integer.parseInt(in.readLine());
+        if (details == 1) {
+            c.showAvailableVehiclesDetails(vType, loc);
+        }
 //        } catch (IOException e) {
 //            System.out.println("IOException!");
 //
