@@ -150,6 +150,8 @@ public class CustomerUI {
         if (details == 1) {
             c.showAvailableVehiclesDetails(vType, loc);
         }
+
+        mainMenu.showMenu();
 //        } catch (IOException e) {
 //            System.out.println("IOException!");
 //
