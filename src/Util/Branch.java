@@ -24,7 +24,7 @@ public enum Branch {
         return loc;
     }
 
-    public Branch getDefault() {
+    public static Branch getDefault() {
         return VAN1;
     }
 }
