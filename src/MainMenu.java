@@ -147,7 +147,7 @@ public class MainMenu implements ActionListener {
         boolean quit = false;
 
         try {
-            while (true) {
+            while (!quit) {
 
                 System.out.print("---------------Main Menu---------------");
                 System.out.print("\nPlease choose one of the following: \n");
@@ -180,8 +180,6 @@ public class MainMenu implements ActionListener {
                         System.out.println("Unrecognized response");
                         System.out.println();
                 }
-
-                if (quit) break;
             }
 
             con.close();
@@ -215,8 +213,9 @@ public class MainMenu implements ActionListener {
     }
 
     private void manualMode() throws SQLException , IOException{
-        outerloop:
-        while (true) {
+        boolean quit = false;
+
+        while (!quit) {
             System.out.println("1: View all tables in database");
             System.out.println("2: Add data to a database");
             System.out.println("3: Delete data from a database");
@@ -285,10 +284,12 @@ public class MainMenu implements ActionListener {
                     System.out.println();
                     break;
                 case "6":
-                    break outerloop;
-
+                    quit = true;
+                    break;
+                default:
+                    System.out.println("Unrecognized option");
+                    System.out.println();
             }
         }
-
     }
 }
