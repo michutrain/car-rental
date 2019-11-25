@@ -1,3 +1,4 @@
+import Util.IDGen;
 import Util.TimeInterval;
 
 import java.sql.*;
@@ -125,10 +126,11 @@ public class Customer {
 
     public int makeReservation(String vtname, String dlicense, TimeInterval interval) throws SQLException {
         getAvailableVehicle.setString(1, vtname);
+        int confNum = IDGen.getNextConfNum();
         ResultSet result = getAvailableVehicle.executeQuery();
         if (result.next()) {
             setVehicleStatus(result.getInt("vid"), 2);
-            makeReservation.setInt(1, 20);
+            makeReservation.setInt(1, confNum);
             makeReservation.setString(2, vtname);
             makeReservation.setString(3, dlicense);
             makeReservation.setTimestamp(4, interval.getFrom());
