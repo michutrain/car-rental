@@ -75,24 +75,28 @@ public class Clerk {
     Long getRentalId(Long vid) throws SQLException{
         getRentalId.setLong(1, vid);
         ResultSet result = getRentalId.executeQuery();
+        result.next();
         return result.getLong("rid");
     }
 
     String getRentalType(Long vid) throws SQLException{
         getRentalType.setLong(1, vid);
         ResultSet result = getRentalType.executeQuery();
+        result.next();
         return result.getString("vtname");
     }
 
     Timestamp getRentalTime(Long vid) throws SQLException{
         getRentalTime.setLong(1, vid);
         ResultSet result = getRentalTime.executeQuery();
+        result.next();
         return result.getTimestamp("fromTimestamp");
     }
 
     Long getRentalOdometer(Long vid) throws SQLException{
         getRentalStartOdometer.setLong(1, vid);
         ResultSet result = getRentalStartOdometer.executeQuery();
+        result.next();
         return result.getLong("odometer");
     }
 
