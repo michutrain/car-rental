@@ -9,7 +9,7 @@ import java.sql.*;
 import static Util.VehicleType.getVehicleType;
 
 public class ClerkUI {
-    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     private Clerk clerk;
     private MainMenu mainMenu;
 

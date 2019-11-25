@@ -9,7 +9,7 @@ import java.sql.*;
 public class CustomerUI {
     private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    MainMenu mainMenu;
+    private MainMenu mainMenu;
 
     public CustomerUI(MainMenu mainMenu) throws SQLException {
 
@@ -119,27 +119,37 @@ public class CustomerUI {
         System.out.println("Location: (default: " + Branch.getDefault().getLoc() + ")");
         String loc = in.readLine();
 
-        System.out.println("Vehicle Type:");
+        System.out.println("Vehicle Type (HH:MM:SS):");
         String vType = in.readLine();
 
-        System.out.println("Pickup Day:");
+        System.out.println("Pickup Day (YYYY-MM-DD):");
         String puDay = in.readLine();
 
-        System.out.println("Pickup Time:");
+        System.out.println("Pickup Time (HH:MM:SS):");
         String puTime = in.readLine();
 
-        System.out.println("Return Day:");
+        System.out.println("Return Day (YYYY-MM-DD):");
         String rDay = in.readLine();
 
         System.out.println("Return Time:");
         String rTime = in.readLine();
 
+        int startYear = Integer.parseInt(puDay.substring(0, 4));
+        int endYear = Integer.parseInt(rDay.substring(0, 4));
 
-        TimeInterval timeInterval = null;
+        if ( startYear < 1900 || startYear > 2100 || endYear < 1900 || endYear > 2100) {
+            System.out.println("Invalid year range given");
+            return;
+        }
+
+        TimeInterval timeInterval;
 
         try {
             timeInterval = new TimeInterval(puTime, puDay, rTime, rDay);
-        } catch (Exception e) {}
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid date/time format given. Please try again");
+            return;
+        }
 
         int count = c.getAvailableVehiclesCount(vType, loc, timeInterval);
         System.out.println("Available Vehicles:" + count);
