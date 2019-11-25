@@ -164,7 +164,7 @@ public class MainMenu implements ActionListener {
                     System.out.print("---------------Main Menu---------------");
                     System.out.print("\nPlease choose one of the following: \n");
 
-                    System.out.print("1:  Customer Menu: \n");
+                    System.out.print("1:  Customer Menu\n");
                     System.out.print("2:  Clerk Menu\n");
                     System.out.print("3: Write custom SQL query");
                     System.out.print("5.  Quit\n>> ");
