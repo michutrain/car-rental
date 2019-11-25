@@ -40,7 +40,7 @@ public class Customer {
             "UPDATE Vehicle SET status = ? WHERE vid = ?";
 
     private final String getCustomerByDLicenseQuery =
-            "SELECT COUNT(*) FROM Customer WHERE DLICENSE = ?";
+            "SELECT COUNT(*) AS total FROM Customer WHERE DLICENSE = ?";
 
     private final String getCustomerByPhoneNumQuery =
             "SELECT COUNT(*) FROM Customer WHERE cellphone = ?";
