@@ -103,10 +103,10 @@ public class CustomerUI {
 
             int confNum = c.makeReservation(location, carType, dlicense, timeInterval);
 
-            System.out.print("Reservation made for a " + carType + " from " + dlicense + " confirmed\n" +
+            System.out.println("Reservation made for a " + carType + " from " + dlicense + " confirmed\n" +
                     "Pickup: " + puDay + " " + puTime + "\n" +
                     "Return: " + rDay + " " + rTime + "\n" +
-                    "Confirmation Number: " + confNum + "\n");
+                    "Confirmation Number: " + confNum);
 
         } else {
             System.out.println("No Available Vehicles");
@@ -142,7 +142,7 @@ public class CustomerUI {
         } catch (Exception e) {}
 
         int count = c.getAvailableVehiclesCount(vType, loc, timeInterval);
-        System.out.print("Available Vehicles:" + count + "\n");
+        System.out.println("Available Vehicles:" + count);
 
         System.out.println("See Vehicles Details: ");
         System.out.println("1: Yes");

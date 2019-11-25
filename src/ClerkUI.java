@@ -1,6 +1,4 @@
 import Util.Branch;
-import Util.TimeInterval;
-import Util.IDGen;
 import Util.VehicleType;
 
 import java.io.BufferedReader;
@@ -223,17 +221,17 @@ public class ClerkUI {
 
     private void returnVehicle() throws SQLException {
         try {
-            System.out.print("Enter Vehicle ID to return: \n");
+            System.out.println("Enter Vehicle ID to return:");
             long vid = Long.parseLong(in.readLine());
             Customer c = new Customer(mainMenu);
 
             if(!c.isCurrentlyRented(vid)) {
-                System.out.print("Vehicle entered is currently not rented. Exiting to clerk menu\n");
+                System.out.println("Vehicle entered is currently not rented. Exiting to clerk menu");
             } else {
                 Long rid = clerk.getRentalId(vid);
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-                System.out.print("Enter Vehicle Odometer: \n");
+                System.out.println("Enter Vehicle Odometer:");
                 long odometer = Long.parseLong(in.readLine());
                 Timestamp rentalTime = clerk.getRentalTime(vid);
                 Long startOdometer = clerk.getRentalOdometer(vid);
@@ -243,7 +241,7 @@ public class ClerkUI {
                 double amount = v.getTotalCost(rentalTime, timestamp, startOdometer, odometer) ;
 
                 clerk.returnVehicle(rid, vid, timestamp, amount);
-                System.out.print("Total Amount Owing: " + amount + "\n");
+                System.out.println("Total Amount Owing: " + amount);
 
             }
         } catch (IOException e) {
@@ -279,34 +277,31 @@ public class ClerkUI {
             return;
         }
 
-        int confNum;
         System.out.println("Enter reservation confirmation No. (Optional): ");
         String confNumStr = in.readLine();
 
         if (confNumStr.isEmpty()) {
-            confNum = IDGen.getNextConfNum();
-
             while(puDay.isEmpty()){
-                System.out.print("Pickup Day (YYYY-MM-DD): \n");
+                System.out.println("Pickup Day (YYYY-MM-DD):");
                 puDay = in.readLine();
             }
 
             while(puTime.isEmpty()){
-                System.out.print("Pickup Time (HH:MM:SS): \n");
+                System.out.println("Pickup Time (HH:MM:SS):");
                 puTime = in.readLine();
             }
 
             while(rDay.isEmpty()){
-                System.out.print("Return Day (YYYY-MM-DD): \n");
+                System.out.println("Return Day (YYYY-MM-DD):");
                 rDay = in.readLine();
             }
             while(rTime.isEmpty()){
-                System.out.print("Return Time (HH:MM:SS): \n");
+                System.out.println("Return Time (HH:MM:SS):");
                 rTime = in.readLine();
             }
 
             while(dlicense.isEmpty()) {
-                System.out.print("Customer's Driver's License:\n");
+                System.out.println("Customer's Driver's License");
                 dlicense = in.readLine();
             }
 
@@ -314,9 +309,9 @@ public class ClerkUI {
             dropTime = Timestamp.valueOf(rDay + " " + rTime);
 
         } else {
-            confNum = Integer.parseInt(confNumStr);
+            int reservationConfNum = Integer.parseInt(confNumStr);
 
-            ResultSet reservationInfo = c.getAllDetailsAboutReservation(confNum);
+            ResultSet reservationInfo = c.getAllDetailsAboutReservation(reservationConfNum);
             reservationInfo.next();
             dlicense = reservationInfo.getString("DLICENSE");
             pickUpTime = reservationInfo.getTimestamp("FromTimestamp");
@@ -330,7 +325,7 @@ public class ClerkUI {
 
         boolean isValid = c.validCustomer(dlicense);
         if (!isValid) {
-            System.out.print("No Existing Customer Found - Please Register:\n");
+            System.out.print("No Existing Customer Found - Please Register:");
 
             System.out.println("Name: ");
             String name = in.readLine();
@@ -338,17 +333,16 @@ public class ClerkUI {
             System.out.println("Phone number: ");
             String pnum = in.readLine();
 
-            System.out.print("Address:\n");
+            System.out.println("Address:\n");
             String address = in.readLine();
 
             c.addCustomer(dlicense, name, pnum, address);
 
-            System.out.print("Confirmed " + name + " added to Database\n");
+            System.out.println("Confirmed " + name + " added to Database");
         }
 
-        int rid = IDGen.getNextRID();
 
-        clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
+        long confNum = clerk.rentVehicle(vid, dlicense, pickUpTime, dropTime, odometer);
 
         System.out.print("Rental made for a " + carType + " from " + br + "\n" +
                 "Pickup: " + puDay + " " + puTime + "\n" +
@@ -384,7 +378,7 @@ public class ClerkUI {
                 }
             }
 
-            System.out.println("Returning to Home Screen");
+            System.out.println("Returning to Home Screen10");
             mainMenu.showMenu();
         } catch (IOException e) {
             e.printStackTrace();

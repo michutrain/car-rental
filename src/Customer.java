@@ -174,8 +174,6 @@ public class Customer {
 
         //System.out.println("'" + sqlStatement.replaceFirst("AND", "WHERE") + "'"); // testing purposes
 
-        System.out.println(sqlStatement);
-
         ResultSet results = stmt.executeQuery(sqlStatement);
 
         results.next();

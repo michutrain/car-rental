@@ -49,17 +49,20 @@ public class Clerk {
         }
     }
 
-    void rentVehicle(long rid, long vid, String dlicense, Timestamp from, Timestamp to, long odometer) throws SQLException {
-        rentVehicle.setLong(1, rid);
+    long rentVehicle(long vid, String dlicense, Timestamp from, Timestamp to, long odometer) throws SQLException {
+        long id = System.currentTimeMillis();
+        rentVehicle.setLong(1, id);
         rentVehicle.setLong(2, vid);
         rentVehicle.setString(3, dlicense);
-        rentVehicle.setTimestamp(4,  from);
+        rentVehicle.setTimestamp(4, from);
         rentVehicle.setTimestamp(5, to);
         rentVehicle.setLong(6, odometer);
 
         rentVehicle.executeUpdate();
 
         con.createStatement().executeUpdate("UPDATE VEHICLE SET STATUS = 1 WHERE VID = " + vid);    // Set status of vehicle to rented
+
+        return id;
     }
 
     void returnVehicle(long rid, long vid, Timestamp stamp, double value) throws SQLException {
