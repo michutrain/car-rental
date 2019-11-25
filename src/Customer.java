@@ -41,12 +41,14 @@ public class Customer {
 
     private final String getCustomerByDLicenseQuery =
             "SELECT COUNT(*) FROM Customer WHERE DLICENSE = ?";
+    private final String getCustomerByPhoneNumQuery =
+            "SELECT COUNT(*) FROM Customer WHERE cellphone = ?";
 
     private final String getAvailableVehiclesDetailsQuery =
-            "SELECT * FROM VEHICLE WHERE vtname = ? and location = ?";
+            "SELECT * FROM VEHICLE WHERE vtname = ? and branch = ?";
 
     private final String getAvailableVehiclesCountQuery =
-            "SELECT * FROM Vehicle";
+            "SELECT COUNT(*) FROM Vehicle";
 
     private final String getVehicleStatusQuery =
             "SELECT STATUS FROM Vehicle WHERE vid = ?";
@@ -115,11 +117,11 @@ public class Customer {
             sqlStatement += " WHERE name = " + name;
 
             if (phoneNum != 0) {
-                sqlStatement += " AND phoneNum = " + phoneNum;
+                sqlStatement += " AND cellphone = " + phoneNum;
             }
 
         } else if (phoneNum != 0) {
-            sqlStatement += "WHERE phoneNum = " + phoneNum;
+            sqlStatement += "WHERE cellphone = " + phoneNum;
         }
 
         return stmt.executeQuery(sqlStatement);
@@ -158,18 +160,20 @@ public class Customer {
         getCustomerByDLicense.setString(1, dlicense);
         ResultSet results = getCustomerByDLicense.executeQuery();
         results.next();
-        return results.getInt("total") > 0;
+        return results.getInt(1) > 0;
     }
 
     public int getAvailableVehiclesCount(String carType, String location, TimeInterval interval) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
-        String sqlStatement = getAvailableVehiclesCountQuery;
+        String type =  "\'" + carType + "\'";
+        String loc = "\'" + location + "\'";
 
+        String sqlStatement = getAvailableVehiclesCountQuery;
         if (carType != null) {
-            sqlStatement += " WHERE vtname = " + carType;
+            sqlStatement += " WHERE vtname = " + type;
 
             if (location != null) {
-                sqlStatement += " AND location = " + location;
+                sqlStatement += " AND branch = " + loc;
             }
 
             if (interval != null) {
@@ -177,7 +181,7 @@ public class Customer {
             }
 
         } else if (location != null) {
-            sqlStatement += "WHERE location = " + location;
+            sqlStatement += "WHERE branch = " + loc;
 
             if (interval != null) {
                 sqlStatement += " AND status = 0 ";
@@ -187,25 +191,26 @@ public class Customer {
             sqlStatement += "WHERE status = 0 ";
         }
 
-        sqlStatement += " ORDER BY location, vtname";
-
         ResultSet results = stmt.executeQuery(sqlStatement);
-        return results.getInt("total");
+        results.next();
+
+        return results.getInt(1);
     }
 
     public ResultSet getAvailableVehicles(String carType, String location) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesCountQuery;
-
+        String type =  "\'" + carType + "\'";
+        String loc = "\'" + location + "\'";
         if (carType != null) {
-            sqlStatement += " WHERE vtname = " + carType;
+            sqlStatement += " WHERE vtname = " + type;
 
             if (location != null) {
-                sqlStatement += " AND location = " + location;
+                sqlStatement += " AND branch = " + loc;
             }
 
         } else if (location != null) {
-            sqlStatement += "WHERE location = " + location;
+            sqlStatement += "WHERE branch = " + loc;
         }
 
         return stmt.executeQuery(sqlStatement);
@@ -214,22 +219,23 @@ public class Customer {
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesDetailsQuery;
-
+        String type =  "\'" + carType + "\'";
+        String loc = "\'" + location + "\'";
         if (carType != null) {
-            sqlStatement += " WHERE vtname = " + carType;
+            sqlStatement += " WHERE vtname = " + type;
 
             if (location != null) {
-                sqlStatement += " AND location = " + location;
+                sqlStatement += " AND branch = " + loc;
             }
 
         } else if (location != null) {
-            sqlStatement += "WHERE location = " + location;
+            sqlStatement += "WHERE branch = " + loc;
         }
 
-        sqlStatement += " ORDER BY location, vtname";
-
+        sqlStatement += " ORDER BY branch, vtname";
+        System.out.println("ORDERED SUCCESSFULLY");
         ResultSet rs = stmt.executeQuery(sqlStatement);
-
+        System.out.println("ORDERED SUCCESSFULLY and got to next line");
         // get info on ResultSet
         ResultSetMetaData rsmd = rs.getMetaData();
 
@@ -252,7 +258,7 @@ public class Customer {
             String model = rs.getString("MODEL");
             System.out.printf("%-20.20s", model);
 
-            String vLocation = rs.getString("LOCATION");
+            String vLocation = rs.getString("BRANCH");
             System.out.printf("%-20.20s", vLocation);
             count++;
         }
