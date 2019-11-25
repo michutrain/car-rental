@@ -1,4 +1,3 @@
-import Util.IDGen;
 import Util.TimeInterval;
 
 import java.sql.*;
@@ -30,11 +29,11 @@ public class Customer {
 
     private final String makeReservationQuery =
             "INSERT INTO Reservation" +
-                    " (confno, vtname, dlicense, fromTimestamp, toTimestamp)" +
-                    " VALUES (?, ?, ?, ?, ?)";
+                    " (vtname, dlicense, fromTimestamp, toTimestamp)" +
+                    " VALUES (?, ?, ?, ?)";
 
     private final String getAvailableVehicleQuery =
-            "SELECT vid FROM Vehicle WHERE vtname = ? AND rownum = 1";
+            "SELECT vid FROM Vehicle WHERE vtname = ? AND branch = ? AND rownum = 1";
 
     private final String getVehicleQuery =
             "UPDATE Vehicle SET status = ? WHERE vid = ?";
@@ -43,7 +42,7 @@ public class Customer {
             "SELECT COUNT(*) AS total FROM Customer WHERE dlicense = ?";
 
     private final String getAvailableVehiclesCountQuery =
-            "SELECT COUNT(*) AS total FROM Vehicle";
+            "SELECT COUNT(*) AS total FROM Vehicle WHERE status = '0'";
 
     private final String getVehicleStatusQuery =
             "SELECT status FROM Vehicle WHERE vid = ?";
@@ -105,14 +104,11 @@ public class Customer {
         String sqlStatement = getAvailableVehiclesCountQuery;
 
         if (name != null) {
-            sqlStatement += " WHERE name = " + name;
+            sqlStatement += " AND name = " + name;
+        }
 
-            if (phoneNum != 0) {
-                sqlStatement += " AND phoneNum = " + phoneNum;
-            }
-
-        } else if (phoneNum != 0) {
-            sqlStatement += "WHERE phoneNum = " + phoneNum;
+        if (phoneNum != 0) {
+            sqlStatement += " AND phoneNum = " + phoneNum;
         }
 
         return stmt.executeQuery(sqlStatement);
@@ -124,17 +120,16 @@ public class Customer {
         getVehicleStatement.executeUpdate();
     }
 
-    public int makeReservation(String vtname, String dlicense, TimeInterval interval) throws SQLException {
+    public int makeReservation(String branch, String vtname, String dlicense, TimeInterval interval) throws SQLException {
         getAvailableVehicle.setString(1, vtname);
-        int confNum = IDGen.getNextConfNum();
+        getAvailableVehicle.setString(2, branch);
         ResultSet result = getAvailableVehicle.executeQuery();
         if (result.next()) {
-            setVehicleStatus(result.getInt("vid"), 2);
-            makeReservation.setInt(1, confNum);
-            makeReservation.setString(2, vtname);
-            makeReservation.setString(3, dlicense);
-            makeReservation.setTimestamp(4, interval.getFrom());
-            makeReservation.setTimestamp(5, interval.getTo());
+            setVehicleStatus(result.getInt("vid"), 1);
+            makeReservation.setString(1, vtname);
+            makeReservation.setString(2, dlicense);
+            makeReservation.setTimestamp(3, interval.getFrom());
+            makeReservation.setTimestamp(4, interval.getTo());
 
             return makeReservation.executeUpdate();
         }
@@ -159,53 +154,29 @@ public class Customer {
     public int getAvailableVehiclesCount(String carType, String branch, TimeInterval interval) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesCountQuery;
-        String type = "\'" + carType + "\'";
-        String loc = "\'" + branch + "\'";
 
         if (carType.length() != 0) {
-            sqlStatement += " AND vtname = " + type;
+            sqlStatement += " AND vtname = \'" + carType + "\'";
         }
 
         if (branch.length() != 0) {
-            sqlStatement += " AND branch = " + loc;
+            sqlStatement += " AND branch = \'" + branch + "\'";
         }
 
         if (interval != null) {
-            sqlStatement += " AND status = '0' ";
+            sqlStatement += " AND status = '0'";
         }
 
-        sqlStatement += "ORDER BY branch, vtname";
+        sqlStatement += " ORDER BY branch, vtname";
 
         //System.out.println("'" + sqlStatement.replaceFirst("AND", "WHERE") + "'"); // testing purposes
 
-        sqlStatement = sqlStatement.replaceFirst("AND", "WHERE");
+        System.out.println(sqlStatement);
 
         ResultSet results = stmt.executeQuery(sqlStatement);
 
         results.next();
         return results.getInt("total");
-    }
-
-    // TODO: dont need this
-    public ResultSet getAvailableVehicles(String carType, String location) throws SQLException {
-        Statement stmt = mainMenu.con.createStatement();
-        String sqlStatement = getAvailableVehiclesCountQuery;
-
-        String type = "\'" + carType + "\'";
-        String loc = "\'" + location + "\'";
-
-        if (carType != null) {
-            sqlStatement += " WHERE vtname = " + type;
-
-            if (location != null) {
-                sqlStatement += " AND branch = " + loc;
-            }
-
-        } else if (location != null) {
-            sqlStatement += "WHERE branch = " + loc;
-        }
-
-        return stmt.executeQuery(sqlStatement);
     }
 
     public void showAvailableVehiclesDetails(String carType, String location) throws SQLException {

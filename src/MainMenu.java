@@ -19,8 +19,8 @@ public class MainMenu implements ActionListener {
     private int loginAttempts = 0;
 
     // components of the login window
-    private String usernameField = "ora_ks376";
-    private String passwordField = "a31356165";
+    private String usernameField = "ora_michu";
+    private String passwordField = "a59315275";
     private JFrame mainFrame;
 
 

@@ -48,20 +48,20 @@ INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, v
         (192839, 'SomeValue', 'FutureCar', '9000', 2106, 'VantaBlack', 1000000, 1, 'Fullsize', 'Yonge St. - Toronto');
 
 
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (1, 'Economy', '002', TIMESTAMP '1998-12-17 12:00:00', TIMESTAMP '1998-12-18 13:00:00');
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (2, 'Fullsize', '005', TIMESTAMP '2019-11-17 12:00:00', TIMESTAMP '2019-11-20 12:00:00');
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (3, 'Truck', '004', TIMESTAMP '2019-12-18 15:00:00', TIMESTAMP '2019-12-20 23:59:59');
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (4, 'Economy', '007', TIMESTAMP '2019-12-04 6:00:00', TIMESTAMP '2020-01-02 12:00:00');
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (5, 'Compact', '3156132', TIMESTAMP '2019-12-05 12:00:00', TIMESTAMP '2020-12-18 12:00:00');
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (6, 'Standard', '003', TIMESTAMP '2019-12-17 12:00:00', TIMESTAMP '2019-12-20 12:00:00');
-INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
-        (7, 'Midsize', '002', TIMESTAMP '2020-01-01 12:30:00', TIMESTAMP '2020-01-21 12:00:00');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Economy', '002', TIMESTAMP '1998-12-17 12:00:00', TIMESTAMP '1998-12-18 13:00:00');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Fullsize', '005', TIMESTAMP '2019-11-17 12:00:00', TIMESTAMP '2019-11-20 12:00:00');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Truck', '004', TIMESTAMP '2019-12-18 15:00:00', TIMESTAMP '2019-12-20 23:59:59');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Economy', '007', TIMESTAMP '2019-12-04 6:00:00', TIMESTAMP '2020-01-02 12:00:00');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Compact', '3156132', TIMESTAMP '2019-12-05 12:00:00', TIMESTAMP '2020-12-18 12:00:00');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Standard', '003', TIMESTAMP '2019-12-17 12:00:00', TIMESTAMP '2019-12-20 12:00:00');
+INSERT INTO Reservation(vtname, dlicense, fromTimestamp, toTimestamp) VALUES
+        ('Midsize', '002', TIMESTAMP '2020-01-01 12:30:00', TIMESTAMP '2020-01-21 12:00:00');
 
 
 INSERT INTO Rental(rid, vid, dlicense, fromTimestamp, toTimestamp, odometer) VALUES

@@ -20,9 +20,9 @@ CREATE TABLE Customer(
 );
 
 CREATE TABLE Reservation(
-  confNo			  NUMBER PRIMARY KEY,
-  vtname			  VARCHAR2(20) NOT NULL,
-  dlicense		  VARCHAR2(20) NOT NULL,
+  confNo		NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+  vtname		VARCHAR2(20) NOT NULL,
+  dlicense		VARCHAR2(20) NOT NULL,
   fromTimestamp	TIMESTAMP,
   toTimestamp   TIMESTAMP,
   FOREIGN KEY (dlicense) REFERENCES Customer,
@@ -30,12 +30,12 @@ CREATE TABLE Reservation(
 );
 
 CREATE TABLE Rental (
-  rid 				  NUMBER PRIMARY KEY,
-  vid 				  NUMBER NOT NULL,
+  rid 			NUMBER PRIMARY KEY,
+  vid 			NUMBER NOT NULL,
   dlicense 	    VARCHAR2(20) NOT NULL,
   fromTimestamp	TIMESTAMP,
-  toTimestamp	  TIMESTAMP,
-  odometer		  NUMBER,
+  toTimestamp	TIMESTAMP,
+  odometer		NUMBER,
   FOREIGN KEY (vid) REFERENCES Vehicle,
   FOREIGN KEY (dlicense) REFERENCES Customer,
   CHECK(fromTimestamp < toTimestamp)
@@ -44,7 +44,7 @@ CREATE TABLE Rental (
 
 CREATE TABLE Return(
   rid       NUMBER PRIMARY KEY,
-  vid				NUMBER NOT NULL,
+  vid		NUMBER NOT NULL,
   stamp     TIMESTAMP,
   value     NUMBER,
   FOREIGN KEY(rid) REFERENCES Rental,

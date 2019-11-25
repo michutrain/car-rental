@@ -13,33 +13,28 @@ public class CustomerUI {
     public CustomerUI(MainMenu mainMenu) throws SQLException {
 
         this.mainMenu = mainMenu;
-        int firstChoice = 0;
-        boolean quit;
-        quit = false;
+
+        System.out.println("Customer Menu: ");
+        System.out.println("1:  View Available Vehicles");
+        System.out.println("2:  Make a Reservation");
+        System.out.println("5:  Back to Main Menu");
 
         try {
-            while (!quit) {
-                if (firstChoice == 0) {
-                    System.out.println("Customer Menu: ");
-                    System.out.println("1:  View Available Vehicles");
-                    System.out.println("2:  Make a Reservation");
-                    System.out.println("5:  Back to Main Menu");
-                    firstChoice = Integer.parseInt(in.readLine());
+            main:
+            while (true) {
+                switch (in.readLine()) {
+                    case "1":
+                        showAvailableVehicles();
+                        break;
+                    case "2":
+                        makeReservation();
+                        break;
+                    case "5":
+                        break main;
+                    default:
+                        System.out.println("Invalid Choice - Please select again");
+                        break;
                 }
-                if (firstChoice == 1) {
-                    showAvailableVehicles();
-                    firstChoice = 0;
-                } else if (firstChoice == 2) {
-                    makeReservation();
-                    firstChoice = 0;
-                } else if (firstChoice == 5) {
-                    quit = true;
-                } else {
-                    System.out.println("Invalid Choice - Please select again");
-                    firstChoice = 0;
-                }
-
-                System.out.println(" ");
             }
 
             System.out.println("Returning to Home Screen");
@@ -50,7 +45,6 @@ public class CustomerUI {
                 this.mainMenu.con.close();
                 System.exit(-1);
             } catch (SQLException ex) {
-                System.out.println("Message: " + ex.getMessage());
                 ex.printStackTrace();
             }
         }
@@ -87,45 +81,32 @@ public class CustomerUI {
         int available = c.getAvailableVehiclesCount(carType, location, timeInterval);
         if (available > 0) {
 
-            boolean confirmed = false;
-            String pNum = "";
-            String name = "";
-            String dlicense = "";
-            String address = "";
-            while (!confirmed) {
+            System.out.println("Please provide a valid driver's license id");
+            String dlicense = in.readLine();
 
-                if (pNum.isEmpty()) {
-                    System.out.println("Please provide a valid phone number:");
-                    pNum = in.readLine();
+            boolean isValid = c.validCustomer(dlicense);
+            if (!isValid) {
+                System.out.println("No Existing Customer Found");
 
-                } else if (name.isEmpty()) {
-                    System.out.println("Please provide a valid name:");
-                    name = in.readLine();
+                System.out.println("Please provide a valid name:");
+                String name = in.readLine();
 
-                } else {
-                    System.out.println("Please provide a valid driver's license id");
-                    dlicense = in.readLine();
+                System.out.println("Please provide a valid phone number:");
+                String pNum = in.readLine();
 
-                    boolean isValid = c.validCustomer(dlicense);
-                    if (!isValid) {
-                        System.out.println("No Existing Customer Found - Adding " + name + " to Customers Database");
+                System.out.println("Please provide a valid address");
+                String address = in.readLine();
 
-                        System.out.println("Please provide a valid driver's license id");
-                        dlicense = in.readLine();
-
-                        System.out.println("Please provide a valid address");
-                        address = in.readLine();
-
-                        c.addCustomer(dlicense, name, pNum, address);
-                    }
-                    int confNum = c.makeReservation(carType, dlicense, timeInterval);
-                    System.out.print("Reservation made for a " + carType + " from " + dlicense + " confirmed\n" +
-                            "Pickup: " + puDay + " " + puTime + "\n" +
-                            "Return: " + rDay + " " + rTime + "\n" +
-                            "Confirmation Number: " + confNum + "\n");
-                    confirmed = true;
-                }
+                c.addCustomer(dlicense, name, pNum, address);
             }
+
+            int confNum = c.makeReservation(location, carType, dlicense, timeInterval);
+
+            System.out.print("Reservation made for a " + carType + " from " + dlicense + " confirmed\n" +
+                    "Pickup: " + puDay + " " + puTime + "\n" +
+                    "Return: " + rDay + " " + rTime + "\n" +
+                    "Confirmation Number: " + confNum + "\n");
+
         } else {
             System.out.println("No Available Vehicles");
         }
