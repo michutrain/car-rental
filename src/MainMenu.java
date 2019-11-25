@@ -7,10 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MainMenu implements ActionListener {
     // command line reader
@@ -146,41 +143,45 @@ public class MainMenu implements ActionListener {
     public void showMenu()
     {
         int choice;
-        boolean quit;
         ClerkUI clerk = new ClerkUI(this);
-        int currentChoice = 0;
-        quit = false;
+        boolean quit = false;
 
         try {
-            while (!quit) {
+            while (true) {
 
-                if(currentChoice == 1) {
-                    CustomerUI c = new CustomerUI(this);
-                } else if (currentChoice == 2) {
-                    clerk.clerkMenu();
-                } else if (currentChoice == 3) {
-                    manualMode();
-                } else {
-                    System.out.print("---------------Main Menu---------------");
-                    System.out.print("\nPlease choose one of the following: \n");
+                System.out.print("---------------Main Menu---------------");
+                System.out.print("\nPlease choose one of the following: \n");
 
-                    System.out.print("1:  Customer Menu: \n");
-                    System.out.print("2:  Clerk Menu\n");
-                    System.out.print("3: Write custom SQL query");
-                    System.out.print("5.  Quit\n>> ");
-                }
+                System.out.println("1:  Customer Menu ");
+                System.out.println("2:  Clerk Menu");
+                System.out.println("3:  Manual Mode");
+                System.out.println("5.  Quit");
+                System.out.println(">>");
+
 
                 choice = Integer.parseInt(in.readLine());
-
                 System.out.println(" ");
 
                 switch(choice)
                 {
-                    case 1:  currentChoice = 1; break;
-                    case 2:  currentChoice = 2; break;
-                    case 3:  currentChoice = 3; break;
-                    case 5:  quit = true;
+                    case 1:
+                        new CustomerUI(this);
+                        break;
+                    case 2:
+                        clerk.clerkMenu();
+                        break;
+                    case 3:
+                        manualMode();
+                        break;
+                    case 5:
+                        quit = true;
+                        break;
+                    default:
+                        System.out.println("Unrecognized response");
+                        System.out.println();
                 }
+
+                if (quit) break;
             }
 
             con.close();
@@ -214,17 +215,80 @@ public class MainMenu implements ActionListener {
     }
 
     private void manualMode() throws SQLException , IOException{
-        System.out.println("1: Update Database");
-        System.out.println("2: Query database");
-        String str = in.readLine();
-        if (str == "1") {
-            System.out.println("Enter update SQL query");
-            str = in.readLine();
-            con.createStatement().executeUpdate(str);
-        } else {
-            System.out.println("Enter query");
-            str = in.readLine();
-            ResultSet rs = con.createStatement().executeQuery(str);
+        outerloop:
+        while (true) {
+            System.out.println("1: View all tables in database");
+            System.out.println("2: Add data to a database");
+            System.out.println("3: Delete data from a database");
+            System.out.println("4: Update data in a database");
+            System.out.println("5: View data in a database");
+            System.out.println("6: Go back to main menu");
+
+            switch (in.readLine()) {
+                case "1":
+                    ResultSet rs = con.createStatement().executeQuery("SELECT table_name FROM user_tables");
+                    System.out.println("TABLE_NAME\n" +
+                            "--------------------------------------------------------------------------------\n");
+                    while (rs.next()) {
+                        System.out.println(rs.getString(1));
+                    }
+                    System.out.println();
+                    break;
+                case "2":
+                    System.out.println("Table to add to: ");
+                    String table_name = in.readLine();
+                    System.out.println("Row to add: ");
+                    String data_to_add = in.readLine();
+                    con.createStatement().executeUpdate("INSERT INTO " + table_name + " VALUES " + data_to_add);
+                    System.out.println();
+                    break;
+                case "3":
+                    System.out.println("Table to delete from: ");
+                    String table_name2 = in.readLine();
+                    System.out.println("Primary key of row to delete: ");
+                    String pk = in.readLine();
+                    System.out.println("Primary key field name");
+                    String pkFieldName = in.readLine();
+                    con.createStatement().executeUpdate("DELETE FROM " + table_name2 + " WHERE " +
+                            pkFieldName + " = " + pk);
+                    System.out.println();
+                    break;
+                case "4":
+                    System.out.println("Table to update: ");
+                    String table_name3 = in.readLine();
+                    System.out.println("Primary key of row to update: ");
+                    String pk3 = in.readLine();
+                    System.out.println("Primary key field name");
+                    String pkfieldname3 = in.readLine();
+                    System.out.println("Name of column you want to update: ");
+                    String columnToUpdate = in.readLine();
+                    System.out.println("New value for column: ");
+                    String columnValue = in.readLine();
+
+                    con.createStatement().executeUpdate("UPDATE " + table_name3 + " SET " +
+                            columnToUpdate + " = " + columnValue + " WHERE " + pkfieldname3 + " = " + pk3);
+                    System.out.println();
+                    break;
+                case "5":
+                    System.out.println("Table's data to view: ");
+                    String table_name4 = in.readLine();
+                    ResultSet rs4 = con.createStatement().executeQuery("SELECT * FROM " + table_name4);
+                    ResultSetMetaData resultSetMetaData = rs4.getMetaData();
+                    int columnCount = resultSetMetaData.getColumnCount();
+
+                    while (rs4.next()) {
+                        for (int i = 1; i <= columnCount; i++) {
+                            System.out.print(rs4.getObject(i) + "   ");
+                        }
+                        System.out.println();
+                    }
+                    System.out.println();
+                    break;
+                case "6":
+                    break outerloop;
+
+            }
         }
+
     }
 }
