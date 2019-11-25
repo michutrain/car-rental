@@ -29,11 +29,11 @@ public class Customer {
 
     private final String makeReservationQuery =
             "INSERT INTO Reservation" +
-                    " (vtname, dlincense, fromTimestamp, toTimestamp)" +
+                    " (vtname, dlicense, fromTimestamp, toTimestamp)" +
                     " VALUES (?, ?, ?, ?)";
 
     private final String getAvailableVehicleQuery =
-            "SELECT vid FROM Vehicle WHERE vtname = ? limit 1";
+            "SELECT vid FROM Vehicle WHERE vtname = ? AND rownum = 1";
 
     private final String getVehicleQuery =
             "UPDATE Vehicle SET status = ? WHERE vid = ?";
@@ -41,17 +41,12 @@ public class Customer {
     private final String getCustomerByDLicenseQuery =
             "SELECT COUNT(*) AS total FROM Customer WHERE dlicense = ?";
 
-    private final String getCustomerByPhoneNumQuery =
-            "SELECT COUNT(*) FROM Customer WHERE cellphone = ?";
-
     private final String getAvailableVehiclesCountQuery =
             "SELECT COUNT(*) AS total FROM Vehicle";
 
     private final String getVehicleStatusQuery =
             "SELECT status FROM Vehicle WHERE vid = ?";
 
-//    private final String getCustomerInformationQuery =
-//            "SELECT * FROM CUSTOMER WHERE name = ? AND CELLPHONE = ?";
 
     public Customer(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
@@ -101,7 +96,7 @@ public class Customer {
         addCustomer.setString(3, phoneNum);
         addCustomer.setString(4, address);
 
-        addCustomer.executeUpdate(); // Message: ORA-00904: "PHONENUM": invalid identifier
+        addCustomer.executeUpdate();
     }
 
     public ResultSet getCustomerInformation(String name, long phoneNum) throws SQLException {
@@ -128,13 +123,13 @@ public class Customer {
         getVehicleStatement.executeQuery();
     }
 
-    public int makeReservation(String vtname, String dlincense, TimeInterval interval) throws SQLException {
+    public int makeReservation(String vtname, String dlicense, TimeInterval interval) throws SQLException {
         getAvailableVehicle.setString(1, vtname);
         ResultSet result = getAvailableVehicle.executeQuery();
         if (result.next()) {
             setVehicleStatus(result.getInt("vid"), 2);
             makeReservation.setString(1, vtname);
-            makeReservation.setString(2, dlincense);
+            makeReservation.setString(2, dlicense);
             makeReservation.setString(3, interval.getFrom().toString());
             makeReservation.setString(4, interval.getTo().toString());
 
@@ -173,14 +168,16 @@ public class Customer {
         }
 
         if (interval != null) {
-            sqlStatement += " AND status = 0 ";
+            sqlStatement += " AND status = '0' ";
         }
 
-        sqlStatement += " ORDER BY branch, vtname";
+    //    sqlStatement += "ORDER BY branch, vtname";
 
         System.out.println("'" + sqlStatement.replaceFirst("AND", "WHERE") + "'");
 
-        ResultSet results = stmt.executeQuery(sqlStatement.replaceFirst("AND", "WHERE"));
+        sqlStatement = sqlStatement.replaceFirst("AND", "WHERE");
+
+        ResultSet results = stmt.executeQuery(sqlStatement);
 
         results.next();
         return results.getInt("total");

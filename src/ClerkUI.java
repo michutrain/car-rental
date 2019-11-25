@@ -322,7 +322,7 @@ public class ClerkUI {
         String br = vehicleInfo.getString("branch");
         String carType = vehicleInfo.getString("vtname");
 
-        // Determine if the custom
+
         boolean isValid = c.validCustomer(dlicense);
         if (!isValid) {
             System.out.print("No Existing Customer Found - Please Register:\n");

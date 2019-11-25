@@ -51,6 +51,7 @@ public class CustomerUI {
                 System.exit(-1);
             } catch (SQLException ex) {
                 System.out.println("Message: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }
@@ -132,8 +133,6 @@ public class CustomerUI {
 //        try {
         System.out.println("Location:");
         String loc = in.readLine();
-
-        System.out.println("loc:" + loc);
 
         System.out.println("Vehicle Type:");
         String vType = in.readLine();
