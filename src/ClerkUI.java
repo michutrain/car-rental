@@ -255,10 +255,14 @@ public class ClerkUI {
 //        String rDay = "1998-12-19";
 //        String rTime = "12:00:00";
 
+        String dlicense = "";
         String puDay = "";
         String puTime = "";
         String rDay = "";
         String rTime = "";
+        Timestamp pickUpTime;
+        Timestamp dropTime;
+        Customer c = new Customer(mainMenu);
 
         System.out.println("Vehicle ID: ");
         long vid = Long.parseLong(in.readLine());
@@ -266,40 +270,59 @@ public class ClerkUI {
         ResultSet vehicleInfo = clerk.getVehicleDetails(vid);
         vehicleInfo.next();
         if (vehicleInfo.getInt("status") != 0) {
-            System.out.println("Vehicle given is not available");
+            System.out.println("Vehicle is not available");
             return;
+        }
+
+        int confNum;
+        System.out.println("Enter reservation confirmation No. (Optional): ");
+        String confNumStr = in.readLine();
+
+        if (confNumStr.isEmpty()) {
+            confNum = IDGen.getNextConfNum();
+
+            while(puDay.isEmpty()){
+                System.out.print("Pickup Day (YYYY-MM-DD): \n");
+                puDay = in.readLine();
+            }
+
+            while(puTime.isEmpty()){
+                System.out.print("Pickup Time (HH:MM:SS): \n");
+                puTime = in.readLine();
+            }
+
+            while(rDay.isEmpty()){
+                System.out.print("Return Day (YYYY-MM-DD): \n");
+                rDay = in.readLine();
+            }
+            while(rTime.isEmpty()){
+                System.out.print("Return Time (HH:MM:SS): \n");
+                rTime = in.readLine();
+            }
+
+            while(dlicense.isEmpty()) {
+                System.out.print("Customer's Driver's License:\n");
+                dlicense = in.readLine();
+            }
+
+            pickUpTime = Timestamp.valueOf(puDay + " " + puTime);
+            dropTime = Timestamp.valueOf(rDay + " " + rTime);
+
+        } else {
+            confNum = Integer.parseInt(confNumStr);
+
+            ResultSet reservationInfo = c.getAllDetailsAboutReservation(confNum);
+            reservationInfo.next();
+            dlicense = reservationInfo.getString("DLICENSE");
+            pickUpTime = reservationInfo.getTimestamp("FromTimestamp");
+            dropTime = reservationInfo.getTimestamp("ToTimestamp");
         }
 
         long odometer = vehicleInfo.getLong("odometer");
         String br = vehicleInfo.getString("branch");
         String carType = vehicleInfo.getString("vtname");
 
-        while(puDay.isEmpty()){
-            System.out.print("Pickup Day (YYYY-MM-DD): \n");
-            puDay = in.readLine();
-        }
-
-        while(puTime.isEmpty()){
-            System.out.print("Pickup Time (HH:MM:SS): \n");
-            puTime = in.readLine();
-        }
-
-        while(rDay.isEmpty()){
-            System.out.print("Return Day (YYYY-MM-DD): \n");
-            rDay = in.readLine();
-        }
-        while(rTime.isEmpty()){
-            System.out.print("Return Time (HH:MM:SS): \n");
-            rTime = in.readLine();
-        }
-
-        Timestamp pickUpTime = Timestamp.valueOf(puDay + " " + puTime);
-        Timestamp dropTime = Timestamp.valueOf(rDay + " " + rTime);
-        Customer c = new Customer(mainMenu);
-
-        System.out.print("Driver's License: \n");
-        String dlicense = in.readLine();
-
+        // Determine if the custom
         boolean isValid = c.validCustomer(dlicense);
         if (!isValid) {
             System.out.print("No Existing Customer Found - Please Register:\n");
@@ -320,16 +343,9 @@ public class ClerkUI {
 
         int rid = IDGen.getNextRID();
 
-        while(dlicense.isEmpty()) {
-            System.out.print("Driver's License:\n");
-            dlicense = in.readLine();
-        }
-
-        int confNum = IDGen.getNextConfNum();
-
         clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
 
-        System.out.print("Rental made for a " + carType + " from " + br + " confirmed\n" +
+        System.out.print("Rental made for a " + carType + " from " + br + "\n" +
                 "Pickup: " + puDay + " " + puTime + "\n" +
                 "Return: " + rDay + " " + rTime + "\n" +
                 "Confirmation Number: " + confNum + "\n");

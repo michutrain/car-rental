@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MainMenu implements ActionListener {
@@ -21,8 +22,8 @@ public class MainMenu implements ActionListener {
     private int loginAttempts = 0;
 
     // components of the login window
-    private String usernameField = "ora_ldobrien";
-    private String passwordField = "a34891416";
+    private String usernameField = "ora_ks376";
+    private String passwordField = "a31356165";
     private JFrame mainFrame;
 
 
@@ -150,24 +151,22 @@ public class MainMenu implements ActionListener {
         int currentChoice = 0;
         quit = false;
 
-        try
-        {
-//            // disable auto commit mode
-//            con.setAutoCommit(false);
-
-            while (!quit)
-            {
+        try {
+            while (!quit) {
 
                 if(currentChoice == 1) {
                     CustomerUI c = new CustomerUI(this);
                 } else if (currentChoice == 2) {
                     clerk.clerkMenu();
+                } else if (currentChoice == 3) {
+                    manualMode();
                 } else {
                     System.out.print("---------------Main Menu---------------");
                     System.out.print("\nPlease choose one of the following: \n");
 
                     System.out.print("1:  Customer Menu: \n");
                     System.out.print("2:  Clerk Menu\n");
+                    System.out.print("3: Write custom SQL query");
                     System.out.print("5.  Quit\n>> ");
                 }
 
@@ -179,6 +178,7 @@ public class MainMenu implements ActionListener {
                 {
                     case 1:  currentChoice = 1; break;
                     case 2:  currentChoice = 2; break;
+                    case 3:  currentChoice = 3; break;
                     case 5:  quit = true;
                 }
             }
@@ -203,12 +203,28 @@ public class MainMenu implements ActionListener {
             }
         }
         catch (SQLException ex) {
-            System.out.println("Message: " + ex.getMessage());
+            System.out.println(ex.getMessage());
+           ex.printStackTrace();
         }
     }
 
     public static void main(String args[])
     {
         MainMenu b = new MainMenu();
+    }
+
+    private void manualMode() throws SQLException , IOException{
+        System.out.println("1: Update Database");
+        System.out.println("2: Query database");
+        String str = in.readLine();
+        if (str == "1") {
+            System.out.println("Enter update SQL query");
+            str = in.readLine();
+            con.createStatement().executeUpdate(str);
+        } else {
+            System.out.println("Enter query");
+            str = in.readLine();
+            ResultSet rs = con.createStatement().executeQuery(str);
+        }
     }
 }

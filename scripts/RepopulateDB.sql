@@ -31,21 +31,21 @@ INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, v
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
         (2, '789101', 'Toyota', 'Camry', 1999, 'Yellow', 20981, 0, 'Economy', 'YVR - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (3, '1121314', 'Honda', 'Civic', 2000, 'Yellow', 20981, 0, 'Standard', 'Granville St. - Vancouver');
+        (3, '1121314', 'Honda', 'Civic', 2000, 'Yellow', 20981, 2, 'Standard', 'Granville St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
         (4, '1516171', 'Lexus', 'A', 2001, 'Yellow', 20981, 0, 'Midsize', 'Robson St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (5, '8192021', 'Tesla', 'Model S', 2002, 'Yellow', 20981, 1, 'Standard', 'Granville St. - Vancouver');
+        (5, '8192021', 'Tesla', 'Model S', 2002, 'Yellow', 20981, 0, 'Standard', 'Granville St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
         (6, '222324', 'Tesla', 'Model 3', 2003, 'Yellow', 20981, 0, 'Fullsize', 'Robson St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (7, '2526262', 'Ford', 'F150', 2004, 'Yellow', 20981, 1, 'Truck', 'Robson St. - Vancouver');
+        (7, '2526262', 'Ford', 'F150', 2004, 'Yellow', 20981, 0, 'Truck', 'Robson St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (8, '1A1 B1S', 'Smart Car', 'Smart Car', 2005, 'Black', 20981, 0, 'Compact', 'YVR - Vancouver');
+        (8, '1A1 B1S', 'Smart Car', 'Smart Car', 2005, 'Black', 20981, 1, 'Compact', 'YVR - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (9, 'ABCDEF', 'Lincoln', 'Memorial', 2006, 'Blue', 20981, 0, 'Fullsize', 'Robson St. - Vancouver');
+        (9, 'ABCDEF', 'Lincoln', 'Memorial', 2006, 'Blue', 20981, 1, 'Fullsize', 'Robson St. - Vancouver');
 INSERT INTO Vehicle(vid, vlicense, make, model, year, color, odometer, status, vtname, branch) VALUES
-        (192839, 'SomeValue', 'FutureCar', '9000', 2106, 'VantaBlack', 1000000, 3, 'Fullsize', 'Yonge St. - Toronto');
+        (192839, 'SomeValue', 'FutureCar', '9000', 2106, 'VantaBlack', 1000000, 1, 'Fullsize', 'Yonge St. - Toronto');
 
 
 INSERT INTO Reservation(confNo, vtname, dlicense, fromTimestamp, toTimestamp) VALUES
