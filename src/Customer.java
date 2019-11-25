@@ -1,5 +1,4 @@
 import Util.Branch;
-import Util.IDGen;
 import Util.TimeInterval;
 
 import java.sql.*;
@@ -132,8 +131,7 @@ public class Customer {
             makeReservation.setString(2, dlicense);
             makeReservation.setTimestamp(3, interval.getFrom());
             makeReservation.setTimestamp(4, interval.getTo());
-            makeReservation.executeUpdate();
-            return IDGen.getNextConfNum();
+            return makeReservation.executeUpdate();
         }
 
         return 0; //incase doesn't exist
