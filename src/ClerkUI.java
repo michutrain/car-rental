@@ -280,26 +280,26 @@ public class ClerkUI {
     }
 
     public void rentVehicle() throws IOException, SQLException {
-//        String carType = "Compact"; // TODO: THESE NEED TO START AS NULL - THEY ONLY HAVE VALUES FOR TESTING PURPOSES
-//        String location = "YVR - Vancouver";
-//        String puDay = "1998-12-18";
-//        String puTime = "12:00:00";
-//        String rDay = "1998-12-19";
-//        String rTime = "12:00:00";
+        String carType = "Compact"; // TODO: THESE NEED TO START AS NULL - THEY ONLY HAVE VALUES FOR TESTING PURPOSES
+        String location = "YVR - Vancouver";
+        String puDay = "1998-12-18";
+        String puTime = "12:00:00";
+        String rDay = "1998-12-19";
+        String rTime = "12:00:00";
 
-        String carType = "";
-        String location = "";
-        String puDay = "";
-        String puTime = "";
-        String rDay = "";
-        String rTime = "";
+//        String carType = "";
+//        String location = "";
+//        String puDay = "";
+//        String puTime = "";
+//        String rDay = "";
+//        String rTime = "";
         while(location.isEmpty()){
-            System.out.print("\nLocation: ");
+            System.out.print("\nLocation: \n");
             location = in.readLine();
         }
 
         while(carType.isEmpty()){
-            System.out.print("\nCar Type: ");
+            System.out.print("\nCar Type: \n");
             carType = in.readLine();
         }
         while(puDay.isEmpty()){
@@ -335,50 +335,52 @@ public class ClerkUI {
             String name = "";
             while (!confirmed) {
                 String dlicense = "";
-                if (pNum == 0L) {
+                while (pNum == 0L) {
                     System.out.print("Please provide a valid Phone Number:\n");
-                    pNum = Long.getLong(in.readLine());
-                } else if (name.isEmpty()) {
+                    pNum = Long.parseLong(in.readLine());
+                }
+
+                while (name.isEmpty()) {
                     System.out.print("Please Provide a Valid Name\n");
                     name = in.readLine();
-                } else {
-                    boolean isValid = c.validCustomer(pNum.toString());
-                    if (!isValid) {
-                        System.out.print("No Existing Customer Found - Please Register:\n");
-
-                        System.out.print("Driver's License:\n");
-                        dlicense = in.readLine();
-
-                        System.out.print("Address:\n");
-                        String address = in.readLine();
-
-                        c.addCustomer(dlicense, name, pNum, address);
-
-                        System.out.print("Confirmed " + name + " added to Database\n");
-                    }
-
-                    ResultSet rs = c.getAvailableVehicles(carType, location);
-                    rs.next();
-                    long vid = rs.getLong("VID");
-                    long odometer = rs.getLong("ODOMETER");
-                    int rid = IDGen.getNextRID();
-
-                    while(dlicense.isEmpty()) {
-                        System.out.print("Driver's License:\n");
-                        dlicense = in.readLine();
-                    }
-
-                    int confNum = IDGen.getNextConfNum();
-
-                    clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
-
-                    System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
-                            "Pickup: " + puDay + " " + puTime + "\n" +
-                            "Return: " + rDay + " " + rTime + "\n" +
-                            "Confirmation Number: " + confNum + "\n");
-                    confirmed = true;
                 }
+                boolean isValid = c.validCustomer(pNum.toString());
+                if (!isValid) {
+                    System.out.print("No Existing Customer Found - Please Register:\n");
+
+                    System.out.print("Driver's License:\n");
+                    dlicense = in.readLine();
+
+                    System.out.print("Address:\n");
+                    String address = in.readLine();
+
+                    c.addCustomer(dlicense, name, pNum, address);
+
+                    System.out.print("Confirmed " + name + " added to Database\n");
+                }
+                System.out.print("Welcome Back " + name);
+                ResultSet rs = c.getAvailableVehicles(carType, location);
+                rs.next();
+                long vid = rs.getLong("VID");
+                long odometer = rs.getLong("ODOMETER");
+                int rid = IDGen.getNextRID();
+
+                while(dlicense.isEmpty()) {
+                    System.out.print("Driver's License:\n");
+                    dlicense = in.readLine();
+                }
+
+                int confNum = IDGen.getNextConfNum();
+
+                clerk.rentVehicle(rid, vid, dlicense, pickUpTime, dropTime, odometer);
+
+                System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
+                        "Pickup: " + puDay + " " + puTime + "\n" +
+                        "Return: " + rDay + " " + rTime + "\n" +
+                        "Confirmation Number: " + confNum + "\n");
+                confirmed = true;
             }
+
         } else {
             System.out.print("No Available Vehicles\n");
         }
