@@ -103,9 +103,12 @@ public class CustomerUI {
                     name = in.readLine();
 
                 } else {
-                    boolean isValid = c.validCustomer(pNum);
+                    System.out.println("Please provide a valid driver's license id");
+                    dlicense = in.readLine();
+
+                    boolean isValid = c.validCustomer(dlicense);
                     if (!isValid) {
-                        System.out.println("No Existing Customer Found - " + name + " added to Customers Database");
+                        System.out.println("No Existing Customer Found - Adding " + name + " to Customers Database");
 
                         System.out.println("Please provide a valid driver's license id");
                         dlicense = in.readLine();
@@ -115,8 +118,8 @@ public class CustomerUI {
 
                         c.addCustomer(dlicense, name, pNum, address);
                     }
-                    int confNum = c.makeReservation(carType, location, timeInterval);
-                    System.out.print("Reservation made for a " + carType + " from " + location + " confirmed\n" +
+                    int confNum = c.makeReservation(carType, dlicense, timeInterval);
+                    System.out.print("Reservation made for a " + carType + " from " + dlicense + " confirmed\n" +
                             "Pickup: " + puDay + " " + puTime + "\n" +
                             "Return: " + rDay + " " + rTime + "\n" +
                             "Confirmation Number: " + confNum + "\n");

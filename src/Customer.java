@@ -29,8 +29,8 @@ public class Customer {
 
     private final String makeReservationQuery =
             "INSERT INTO Reservation" +
-                    " (vtname, dlicense, fromTimestamp, toTimestamp)" +
-                    " VALUES (?, ?, ?, ?)";
+                    " (confno, vtname, dlicense, fromTimestamp, toTimestamp)" +
+                    " VALUES (?, ?, ?, ?, ?)";
 
     private final String getAvailableVehicleQuery =
             "SELECT vid FROM Vehicle WHERE vtname = ? AND rownum = 1";
@@ -120,7 +120,7 @@ public class Customer {
     private void setVehicleStatus(long vid, int status) throws SQLException { // 0: available, 1: rented, 2: maintainence
         getVehicleStatement.setInt(1, status);
         getVehicleStatement.setLong(2, vid);
-        getVehicleStatement.executeQuery();
+        getVehicleStatement.executeUpdate();
     }
 
     public int makeReservation(String vtname, String dlicense, TimeInterval interval) throws SQLException {
@@ -128,18 +128,19 @@ public class Customer {
         ResultSet result = getAvailableVehicle.executeQuery();
         if (result.next()) {
             setVehicleStatus(result.getInt("vid"), 2);
-            makeReservation.setString(1, vtname);
-            makeReservation.setString(2, dlicense);
-            makeReservation.setString(3, interval.getFrom().toString());
-            makeReservation.setString(4, interval.getTo().toString());
+            makeReservation.setInt(1, 20);
+            makeReservation.setString(2, vtname);
+            makeReservation.setString(3, dlicense);
+            makeReservation.setTimestamp(4, interval.getFrom());
+            makeReservation.setTimestamp(5, interval.getTo());
 
             return makeReservation.executeUpdate();
         }
 
-        return 0; //incase no exist
+        return 0; //incase doesn't exist
     }
 
-    public boolean isCurrentlyRented(Long vid) throws SQLException{
+    public boolean isCurrentlyRented(Long vid) throws SQLException {
         getVehicleStatus.setLong(1, vid);
         ResultSet result = getVehicleStatus.executeQuery();
         result.next();
@@ -156,7 +157,7 @@ public class Customer {
     public int getAvailableVehiclesCount(String carType, String branch, TimeInterval interval) throws SQLException {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesCountQuery;
-        String type =  "\'" + carType + "\'";
+        String type = "\'" + carType + "\'";
         String loc = "\'" + branch + "\'";
 
         if (carType.length() != 0) {
@@ -171,9 +172,9 @@ public class Customer {
             sqlStatement += " AND status = '0' ";
         }
 
-    //    sqlStatement += "ORDER BY branch, vtname";
+        sqlStatement += "ORDER BY branch, vtname";
 
-        System.out.println("'" + sqlStatement.replaceFirst("AND", "WHERE") + "'");
+        //System.out.println("'" + sqlStatement.replaceFirst("AND", "WHERE") + "'"); // testing purposes
 
         sqlStatement = sqlStatement.replaceFirst("AND", "WHERE");
 
@@ -188,7 +189,7 @@ public class Customer {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = getAvailableVehiclesCountQuery;
 
-        String type =  "\'" + carType + "\'";
+        String type = "\'" + carType + "\'";
         String loc = "\'" + location + "\'";
 
         if (carType != null) {
@@ -209,7 +210,7 @@ public class Customer {
         Statement stmt = mainMenu.con.createStatement();
         String sqlStatement = "SELECT * FROM Vehicle";
 
-        String type =  "\'" + carType + "\'";
+        String type = "\'" + carType + "\'";
         String loc = "\'" + location + "\'";
 
         if (carType.length() != 0) {
@@ -236,7 +237,7 @@ public class Customer {
 
         System.out.println();
 
-        for (int row = 0; row < 15; row ++) {
+        for (int row = 0; row < 15; row++) {
             if (!rs.next()) break;
             for (int i = 1; i <= numCols; i++) {
                 System.out.printf("%-10.10s", rs.getString(i));
